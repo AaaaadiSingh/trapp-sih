@@ -9,6 +9,8 @@ class PersonalInfoState with _$PersonalInfoState {
     EmploymentStatusInput employmentStatus,
     @Default(PrivacyConsentInput.pure()) PrivacyConsentInput privacyConsent,
     @Default(false) bool dataProcessingConsent,
+    @Default(false) bool locationConsent,
+    @Default(false) bool backgroundLocationConsent,
     @Default(false) bool isValid,
     @Default(FormzSubmissionStatus.initial) FormzSubmissionStatus status,
     PersonalInfo? personalInfo,

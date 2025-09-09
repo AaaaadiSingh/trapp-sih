@@ -6,6 +6,7 @@ import '../../features/profile/presentation/pages/travel_preferences_page.dart';
 import '../../features/profile/presentation/pages/location_demographics_page.dart';
 import '../../features/profile/presentation/pages/review_confirmation_page.dart';
 import '../../features/dashboard/presentation/pages/dashboard_page.dart';
+import '../../features/settings/presentation/pages/settings_page.dart';
 import '../../features/profile/domain/entities/personal_info.dart';
 import '../../features/profile/domain/entities/travel_preferences.dart';
 import '../../features/profile/domain/entities/location_demographics.dart';
@@ -16,6 +17,7 @@ class AppRouter {
   static const String locationDemographics = '/location-demographics';
   static const String reviewConfirmation = '/review-confirmation';
   static const String dashboard = '/dashboard';
+  static const String settings = '/settings';
 
   static final GoRouter router = GoRouter(
     initialLocation: personalInfo,
@@ -82,6 +84,11 @@ class AppRouter {
         path: dashboard,
         name: 'dashboard',
         builder: (context, state) => const DashboardPage(),
+      ),
+      GoRoute(
+        path: settings,
+        name: 'settings',
+        builder: (context, state) => const SettingsPage(),
       ),
     ],
   );

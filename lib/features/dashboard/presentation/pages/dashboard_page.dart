@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/injection_container.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -57,11 +58,11 @@ class DashboardView extends StatelessWidget {
             centerTitle: true,
             actions: [
               IconButton(
-                icon: const Icon(Icons.settings_outlined),
-                onPressed: () {
-                  // Navigate to settings
-                },
-              ),
+              icon: const Icon(Icons.settings),
+              onPressed: () {
+                context.go('/settings');
+              },
+            ),
             ],
           ),
           body: _buildBody(context, state),

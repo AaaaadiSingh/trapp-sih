@@ -12,6 +12,10 @@ class PersonalInfoEvent with _$PersonalInfoEvent {
       PrivacyConsentChanged;
   const factory PersonalInfoEvent.dataProcessingConsentChanged(bool consent) =
       DataProcessingConsentChanged;
+  const factory PersonalInfoEvent.locationConsentChanged(bool consent) =
+      LocationConsentChanged;
+  const factory PersonalInfoEvent.backgroundLocationConsentChanged(bool consent) =
+      BackgroundLocationConsentChanged;
   const factory PersonalInfoEvent.formSubmitted() = FormSubmitted;
   const factory PersonalInfoEvent.formReset() = FormReset;
 }

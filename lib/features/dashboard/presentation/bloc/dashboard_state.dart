@@ -7,5 +7,12 @@ class DashboardState with _$DashboardState {
     @Default(false) bool isLoading,
     DashboardData? dashboardData,
     String? error,
+    @Default(false) bool isLocationTracking,
+  @Default(null) Position? currentLocation,
+  @Default([]) List<Position> locationHistory,
+  @Default(false) bool isTripDetectionActive,
+    DetectedTrip? currentTrip,
+    @Default([]) List<TripLog> recentTrips,
+    TripStatistics? tripStatistics,
   }) = _DashboardState;
 }

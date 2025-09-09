@@ -1,8 +1,17 @@
+import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
+import 'package:geolocator/geolocator.dart';
 
 import '../../domain/entities/dashboard_data.dart';
+import '../../../../core/services/location_service.dart';
+import '../../../../core/services/trip_detection_service.dart';
+import '../../../../core/services/trip_logging_service.dart';
+// DetectedTrip, TripLog, and TripStatistics are imported from services
+// DetectedTrip from trip_detection_service.dart
+// TripLog and TripStatistics from trip_logging_service.dart
+
 
 part 'dashboard_bloc.freezed.dart';
 part 'dashboard_event.dart';
@@ -10,9 +19,32 @@ part 'dashboard_state.dart';
 
 @injectable
 class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
-  DashboardBloc() : super(const DashboardState()) {
+  final LocationService _locationService;
+  final TripDetectionService _tripDetectionService;
+  final TripLoggingService _tripLoggingService;
+  StreamSubscription<Position>? _locationSubscription;
+  StreamSubscription<DetectedTrip>? _tripSubscription;
+  StreamSubscription<TripLog>? _tripLogSubscription;
+
+  DashboardBloc(
+    this._locationService,
+    this._tripDetectionService,
+    this._tripLoggingService,
+  ) : super(const DashboardState()) {
     on<TabChanged>(_onTabChanged);
     on<LoadDashboardData>(_onLoadDashboardData);
+    on<StartLocationTracking>(_onStartLocationTracking);
+    on<StopLocationTracking>(_onStopLocationTracking);
+    on<LocationUpdated>(_onLocationUpdated);
+    on<StartTripDetection>(_onStartTripDetection);
+    on<StopTripDetection>(_onStopTripDetection);
+    on<TripDetected>(_onTripDetected);
+    on<TripLogged>(_onTripLogged);
+    
+    // Listen to location updates
+    _locationService.locationStream.listen((position) {
+      add(DashboardEvent.locationUpdated(position));
+    });
   }
 
   void _onTabChanged(TabChanged event, Emitter<DashboardState> emit) {
@@ -68,5 +100,169 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
         error: e.toString(),
       ));
     }
+  }
+
+  void _onStartLocationTracking(
+    StartLocationTracking event,
+    Emitter<DashboardState> emit,
+  ) async {
+    final result = await _locationService.startLocationTracking();
+    result.fold(
+      (failure) => emit(state.copyWith(error: failure.message)),
+      (_) => emit(state.copyWith(isLocationTracking: true)),
+    );
+  }
+
+  void _onStopLocationTracking(
+    StopLocationTracking event,
+    Emitter<DashboardState> emit,
+  ) async {
+    await _locationService.stopLocationTracking();
+    emit(state.copyWith(isLocationTracking: false));
+  }
+
+  void _onLocationUpdated(
+    LocationUpdated event,
+    Emitter<DashboardState> emit,
+  ) {
+    final updatedHistory = List<Position>.from(state.locationHistory);
+    updatedHistory.add(event.position);
+    
+    // Keep only last 100 positions to avoid memory issues
+    if (updatedHistory.length > 100) {
+      updatedHistory.removeAt(0);
+    }
+    
+    emit(state.copyWith(
+      currentLocation: event.position,
+      locationHistory: updatedHistory,
+    ));
+  }
+
+  Future<void> _onStartTripDetection(
+    StartTripDetection event,
+    Emitter<DashboardState> emit,
+  ) async {
+    try {
+      if (state.isTripDetectionActive) {
+        return;
+      }
+
+      // Start trip detection service
+      final result = await _tripDetectionService.startTripDetection();
+      
+      result.fold(
+        (failure) {
+          emit(state.copyWith(
+            error: 'Failed to start trip detection: ${failure.message}',
+          ));
+        },
+        (_) {
+          emit(state.copyWith(
+            isTripDetectionActive: true,
+            error: null,
+          ));
+          
+          // Start trip logging
+          _tripLoggingService.startLogging(_tripDetectionService);
+          
+          // Listen to trip events
+          _tripSubscription = _tripDetectionService.tripStream.listen(
+            (trip) => add(DashboardEvent.tripDetected(trip)),
+          );
+          
+          // Listen to trip log events
+          _tripLogSubscription = _tripLoggingService.tripLogStream.listen(
+            (tripLog) => add(DashboardEvent.tripLogged(tripLog)),
+          );
+        },
+      );
+    } catch (e) {
+      emit(state.copyWith(
+        error: 'Error starting trip detection: $e',
+      ));
+    }
+  }
+
+  Future<void> _onStopTripDetection(
+    StopTripDetection event,
+    Emitter<DashboardState> emit,
+  ) async {
+    try {
+      if (!state.isTripDetectionActive) {
+        return;
+      }
+
+      // Stop services
+      await _tripDetectionService.stopTripDetection();
+      await _tripLoggingService.stopLogging();
+      
+      // Cancel subscriptions
+      await _tripSubscription?.cancel();
+      await _tripLogSubscription?.cancel();
+      _tripSubscription = null;
+      _tripLogSubscription = null;
+
+      emit(state.copyWith(
+        isTripDetectionActive: false,
+        currentTrip: null,
+        error: null,
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        error: 'Error stopping trip detection: $e',
+      ));
+    }
+  }
+
+  Future<void> _onTripDetected(
+    TripDetected event,
+    Emitter<DashboardState> emit,
+  ) async {
+    try {
+      emit(state.copyWith(
+        currentTrip: event.trip,
+        error: null,
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        error: 'Error processing detected trip: $e',
+      ));
+    }
+  }
+
+  Future<void> _onTripLogged(
+    TripLogged event,
+    Emitter<DashboardState> emit,
+  ) async {
+    try {
+      // Add to recent trips (keep last 10)
+      final updatedRecentTrips = [event.tripLog, ...state.recentTrips];
+      if (updatedRecentTrips.length > 10) {
+        updatedRecentTrips.removeRange(10, updatedRecentTrips.length);
+      }
+      
+      // Update trip statistics
+      final statistics = await _tripLoggingService.getTripStatistics();
+      
+      emit(state.copyWith(
+        recentTrips: updatedRecentTrips,
+        tripStatistics: statistics,
+        currentTrip: null, // Clear current trip when logged
+        error: null,
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        error: 'Error processing logged trip: $e',
+      ));
+    }
+  }
+
+  @override
+  Future<void> close() async {
+    await _locationSubscription?.cancel();
+    await _tripSubscription?.cancel();
+    await _tripLogSubscription?.cancel();
+    return super.close();
   }
 }

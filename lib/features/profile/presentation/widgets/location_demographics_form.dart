@@ -10,6 +10,7 @@ import '../../../../core/widgets/custom_checkbox_field.dart';
 import '../../../../core/widgets/custom_dropdown_field.dart';
 import '../../../../core/widgets/custom_text_field.dart';
 import '../../../../core/routing/app_router.dart';
+import 'location_consent_form.dart';
 import '../../domain/entities/location_demographics.dart';
 import '../../domain/entities/personal_info.dart';
 import '../../domain/entities/travel_preferences.dart';
@@ -74,6 +75,17 @@ class LocationDemographicsForm extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Location Consent
+                  LocationConsentForm(
+                    onConsentChanged: (locationConsent, backgroundLocationConsent) {
+                      // Handle consent changes if needed
+                      // This could be passed to the BLoC if location consent affects the form
+                    },
+                    initialLocationConsent: personalInfo.locationConsent,
+                    initialBackgroundLocationConsent: personalInfo.backgroundLocationConsent,
+                  ),
+                  SizedBox(height: 24.h),
+                  
                   // Home Location
                   BlocBuilder<LocationDemographicsBloc, LocationDemographicsState>(
                     buildWhen: (previous, current) =>

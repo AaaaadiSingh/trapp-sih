@@ -24,6 +24,8 @@ mixin _$PersonalInfoEvent {
     required TResult Function(String employmentStatus) employmentStatusChanged,
     required TResult Function(bool consent) privacyConsentChanged,
     required TResult Function(bool consent) dataProcessingConsentChanged,
+    required TResult Function(bool consent) locationConsentChanged,
+    required TResult Function(bool consent) backgroundLocationConsentChanged,
     required TResult Function() formSubmitted,
     required TResult Function() formReset,
   }) => throw _privateConstructorUsedError;
@@ -34,6 +36,8 @@ mixin _$PersonalInfoEvent {
     TResult? Function(String employmentStatus)? employmentStatusChanged,
     TResult? Function(bool consent)? privacyConsentChanged,
     TResult? Function(bool consent)? dataProcessingConsentChanged,
+    TResult? Function(bool consent)? locationConsentChanged,
+    TResult? Function(bool consent)? backgroundLocationConsentChanged,
     TResult? Function()? formSubmitted,
     TResult? Function()? formReset,
   }) => throw _privateConstructorUsedError;
@@ -44,6 +48,8 @@ mixin _$PersonalInfoEvent {
     TResult Function(String employmentStatus)? employmentStatusChanged,
     TResult Function(bool consent)? privacyConsentChanged,
     TResult Function(bool consent)? dataProcessingConsentChanged,
+    TResult Function(bool consent)? locationConsentChanged,
+    TResult Function(bool consent)? backgroundLocationConsentChanged,
     TResult Function()? formSubmitted,
     TResult Function()? formReset,
     required TResult orElse(),
@@ -58,6 +64,10 @@ mixin _$PersonalInfoEvent {
     privacyConsentChanged,
     required TResult Function(DataProcessingConsentChanged value)
     dataProcessingConsentChanged,
+    required TResult Function(LocationConsentChanged value)
+    locationConsentChanged,
+    required TResult Function(BackgroundLocationConsentChanged value)
+    backgroundLocationConsentChanged,
     required TResult Function(FormSubmitted value) formSubmitted,
     required TResult Function(FormReset value) formReset,
   }) => throw _privateConstructorUsedError;
@@ -69,6 +79,9 @@ mixin _$PersonalInfoEvent {
     TResult? Function(PrivacyConsentChanged value)? privacyConsentChanged,
     TResult? Function(DataProcessingConsentChanged value)?
     dataProcessingConsentChanged,
+    TResult? Function(LocationConsentChanged value)? locationConsentChanged,
+    TResult? Function(BackgroundLocationConsentChanged value)?
+    backgroundLocationConsentChanged,
     TResult? Function(FormSubmitted value)? formSubmitted,
     TResult? Function(FormReset value)? formReset,
   }) => throw _privateConstructorUsedError;
@@ -80,6 +93,9 @@ mixin _$PersonalInfoEvent {
     TResult Function(PrivacyConsentChanged value)? privacyConsentChanged,
     TResult Function(DataProcessingConsentChanged value)?
     dataProcessingConsentChanged,
+    TResult Function(LocationConsentChanged value)? locationConsentChanged,
+    TResult Function(BackgroundLocationConsentChanged value)?
+    backgroundLocationConsentChanged,
     TResult Function(FormSubmitted value)? formSubmitted,
     TResult Function(FormReset value)? formReset,
     required TResult orElse(),
@@ -187,6 +203,8 @@ class _$AgeGroupChangedImpl implements AgeGroupChanged {
     required TResult Function(String employmentStatus) employmentStatusChanged,
     required TResult Function(bool consent) privacyConsentChanged,
     required TResult Function(bool consent) dataProcessingConsentChanged,
+    required TResult Function(bool consent) locationConsentChanged,
+    required TResult Function(bool consent) backgroundLocationConsentChanged,
     required TResult Function() formSubmitted,
     required TResult Function() formReset,
   }) {
@@ -201,6 +219,8 @@ class _$AgeGroupChangedImpl implements AgeGroupChanged {
     TResult? Function(String employmentStatus)? employmentStatusChanged,
     TResult? Function(bool consent)? privacyConsentChanged,
     TResult? Function(bool consent)? dataProcessingConsentChanged,
+    TResult? Function(bool consent)? locationConsentChanged,
+    TResult? Function(bool consent)? backgroundLocationConsentChanged,
     TResult? Function()? formSubmitted,
     TResult? Function()? formReset,
   }) {
@@ -215,6 +235,8 @@ class _$AgeGroupChangedImpl implements AgeGroupChanged {
     TResult Function(String employmentStatus)? employmentStatusChanged,
     TResult Function(bool consent)? privacyConsentChanged,
     TResult Function(bool consent)? dataProcessingConsentChanged,
+    TResult Function(bool consent)? locationConsentChanged,
+    TResult Function(bool consent)? backgroundLocationConsentChanged,
     TResult Function()? formSubmitted,
     TResult Function()? formReset,
     required TResult orElse(),
@@ -236,6 +258,10 @@ class _$AgeGroupChangedImpl implements AgeGroupChanged {
     privacyConsentChanged,
     required TResult Function(DataProcessingConsentChanged value)
     dataProcessingConsentChanged,
+    required TResult Function(LocationConsentChanged value)
+    locationConsentChanged,
+    required TResult Function(BackgroundLocationConsentChanged value)
+    backgroundLocationConsentChanged,
     required TResult Function(FormSubmitted value) formSubmitted,
     required TResult Function(FormReset value) formReset,
   }) {
@@ -251,6 +277,9 @@ class _$AgeGroupChangedImpl implements AgeGroupChanged {
     TResult? Function(PrivacyConsentChanged value)? privacyConsentChanged,
     TResult? Function(DataProcessingConsentChanged value)?
     dataProcessingConsentChanged,
+    TResult? Function(LocationConsentChanged value)? locationConsentChanged,
+    TResult? Function(BackgroundLocationConsentChanged value)?
+    backgroundLocationConsentChanged,
     TResult? Function(FormSubmitted value)? formSubmitted,
     TResult? Function(FormReset value)? formReset,
   }) {
@@ -266,6 +295,9 @@ class _$AgeGroupChangedImpl implements AgeGroupChanged {
     TResult Function(PrivacyConsentChanged value)? privacyConsentChanged,
     TResult Function(DataProcessingConsentChanged value)?
     dataProcessingConsentChanged,
+    TResult Function(LocationConsentChanged value)? locationConsentChanged,
+    TResult Function(BackgroundLocationConsentChanged value)?
+    backgroundLocationConsentChanged,
     TResult Function(FormSubmitted value)? formSubmitted,
     TResult Function(FormReset value)? formReset,
     required TResult orElse(),
@@ -364,6 +396,8 @@ class _$GenderChangedImpl implements GenderChanged {
     required TResult Function(String employmentStatus) employmentStatusChanged,
     required TResult Function(bool consent) privacyConsentChanged,
     required TResult Function(bool consent) dataProcessingConsentChanged,
+    required TResult Function(bool consent) locationConsentChanged,
+    required TResult Function(bool consent) backgroundLocationConsentChanged,
     required TResult Function() formSubmitted,
     required TResult Function() formReset,
   }) {
@@ -378,6 +412,8 @@ class _$GenderChangedImpl implements GenderChanged {
     TResult? Function(String employmentStatus)? employmentStatusChanged,
     TResult? Function(bool consent)? privacyConsentChanged,
     TResult? Function(bool consent)? dataProcessingConsentChanged,
+    TResult? Function(bool consent)? locationConsentChanged,
+    TResult? Function(bool consent)? backgroundLocationConsentChanged,
     TResult? Function()? formSubmitted,
     TResult? Function()? formReset,
   }) {
@@ -392,6 +428,8 @@ class _$GenderChangedImpl implements GenderChanged {
     TResult Function(String employmentStatus)? employmentStatusChanged,
     TResult Function(bool consent)? privacyConsentChanged,
     TResult Function(bool consent)? dataProcessingConsentChanged,
+    TResult Function(bool consent)? locationConsentChanged,
+    TResult Function(bool consent)? backgroundLocationConsentChanged,
     TResult Function()? formSubmitted,
     TResult Function()? formReset,
     required TResult orElse(),
@@ -413,6 +451,10 @@ class _$GenderChangedImpl implements GenderChanged {
     privacyConsentChanged,
     required TResult Function(DataProcessingConsentChanged value)
     dataProcessingConsentChanged,
+    required TResult Function(LocationConsentChanged value)
+    locationConsentChanged,
+    required TResult Function(BackgroundLocationConsentChanged value)
+    backgroundLocationConsentChanged,
     required TResult Function(FormSubmitted value) formSubmitted,
     required TResult Function(FormReset value) formReset,
   }) {
@@ -428,6 +470,9 @@ class _$GenderChangedImpl implements GenderChanged {
     TResult? Function(PrivacyConsentChanged value)? privacyConsentChanged,
     TResult? Function(DataProcessingConsentChanged value)?
     dataProcessingConsentChanged,
+    TResult? Function(LocationConsentChanged value)? locationConsentChanged,
+    TResult? Function(BackgroundLocationConsentChanged value)?
+    backgroundLocationConsentChanged,
     TResult? Function(FormSubmitted value)? formSubmitted,
     TResult? Function(FormReset value)? formReset,
   }) {
@@ -443,6 +488,9 @@ class _$GenderChangedImpl implements GenderChanged {
     TResult Function(PrivacyConsentChanged value)? privacyConsentChanged,
     TResult Function(DataProcessingConsentChanged value)?
     dataProcessingConsentChanged,
+    TResult Function(LocationConsentChanged value)? locationConsentChanged,
+    TResult Function(BackgroundLocationConsentChanged value)?
+    backgroundLocationConsentChanged,
     TResult Function(FormSubmitted value)? formSubmitted,
     TResult Function(FormReset value)? formReset,
     required TResult orElse(),
@@ -544,6 +592,8 @@ class _$EmploymentStatusChangedImpl implements EmploymentStatusChanged {
     required TResult Function(String employmentStatus) employmentStatusChanged,
     required TResult Function(bool consent) privacyConsentChanged,
     required TResult Function(bool consent) dataProcessingConsentChanged,
+    required TResult Function(bool consent) locationConsentChanged,
+    required TResult Function(bool consent) backgroundLocationConsentChanged,
     required TResult Function() formSubmitted,
     required TResult Function() formReset,
   }) {
@@ -558,6 +608,8 @@ class _$EmploymentStatusChangedImpl implements EmploymentStatusChanged {
     TResult? Function(String employmentStatus)? employmentStatusChanged,
     TResult? Function(bool consent)? privacyConsentChanged,
     TResult? Function(bool consent)? dataProcessingConsentChanged,
+    TResult? Function(bool consent)? locationConsentChanged,
+    TResult? Function(bool consent)? backgroundLocationConsentChanged,
     TResult? Function()? formSubmitted,
     TResult? Function()? formReset,
   }) {
@@ -572,6 +624,8 @@ class _$EmploymentStatusChangedImpl implements EmploymentStatusChanged {
     TResult Function(String employmentStatus)? employmentStatusChanged,
     TResult Function(bool consent)? privacyConsentChanged,
     TResult Function(bool consent)? dataProcessingConsentChanged,
+    TResult Function(bool consent)? locationConsentChanged,
+    TResult Function(bool consent)? backgroundLocationConsentChanged,
     TResult Function()? formSubmitted,
     TResult Function()? formReset,
     required TResult orElse(),
@@ -593,6 +647,10 @@ class _$EmploymentStatusChangedImpl implements EmploymentStatusChanged {
     privacyConsentChanged,
     required TResult Function(DataProcessingConsentChanged value)
     dataProcessingConsentChanged,
+    required TResult Function(LocationConsentChanged value)
+    locationConsentChanged,
+    required TResult Function(BackgroundLocationConsentChanged value)
+    backgroundLocationConsentChanged,
     required TResult Function(FormSubmitted value) formSubmitted,
     required TResult Function(FormReset value) formReset,
   }) {
@@ -608,6 +666,9 @@ class _$EmploymentStatusChangedImpl implements EmploymentStatusChanged {
     TResult? Function(PrivacyConsentChanged value)? privacyConsentChanged,
     TResult? Function(DataProcessingConsentChanged value)?
     dataProcessingConsentChanged,
+    TResult? Function(LocationConsentChanged value)? locationConsentChanged,
+    TResult? Function(BackgroundLocationConsentChanged value)?
+    backgroundLocationConsentChanged,
     TResult? Function(FormSubmitted value)? formSubmitted,
     TResult? Function(FormReset value)? formReset,
   }) {
@@ -623,6 +684,9 @@ class _$EmploymentStatusChangedImpl implements EmploymentStatusChanged {
     TResult Function(PrivacyConsentChanged value)? privacyConsentChanged,
     TResult Function(DataProcessingConsentChanged value)?
     dataProcessingConsentChanged,
+    TResult Function(LocationConsentChanged value)? locationConsentChanged,
+    TResult Function(BackgroundLocationConsentChanged value)?
+    backgroundLocationConsentChanged,
     TResult Function(FormSubmitted value)? formSubmitted,
     TResult Function(FormReset value)? formReset,
     required TResult orElse(),
@@ -726,6 +790,8 @@ class _$PrivacyConsentChangedImpl implements PrivacyConsentChanged {
     required TResult Function(String employmentStatus) employmentStatusChanged,
     required TResult Function(bool consent) privacyConsentChanged,
     required TResult Function(bool consent) dataProcessingConsentChanged,
+    required TResult Function(bool consent) locationConsentChanged,
+    required TResult Function(bool consent) backgroundLocationConsentChanged,
     required TResult Function() formSubmitted,
     required TResult Function() formReset,
   }) {
@@ -740,6 +806,8 @@ class _$PrivacyConsentChangedImpl implements PrivacyConsentChanged {
     TResult? Function(String employmentStatus)? employmentStatusChanged,
     TResult? Function(bool consent)? privacyConsentChanged,
     TResult? Function(bool consent)? dataProcessingConsentChanged,
+    TResult? Function(bool consent)? locationConsentChanged,
+    TResult? Function(bool consent)? backgroundLocationConsentChanged,
     TResult? Function()? formSubmitted,
     TResult? Function()? formReset,
   }) {
@@ -754,6 +822,8 @@ class _$PrivacyConsentChangedImpl implements PrivacyConsentChanged {
     TResult Function(String employmentStatus)? employmentStatusChanged,
     TResult Function(bool consent)? privacyConsentChanged,
     TResult Function(bool consent)? dataProcessingConsentChanged,
+    TResult Function(bool consent)? locationConsentChanged,
+    TResult Function(bool consent)? backgroundLocationConsentChanged,
     TResult Function()? formSubmitted,
     TResult Function()? formReset,
     required TResult orElse(),
@@ -775,6 +845,10 @@ class _$PrivacyConsentChangedImpl implements PrivacyConsentChanged {
     privacyConsentChanged,
     required TResult Function(DataProcessingConsentChanged value)
     dataProcessingConsentChanged,
+    required TResult Function(LocationConsentChanged value)
+    locationConsentChanged,
+    required TResult Function(BackgroundLocationConsentChanged value)
+    backgroundLocationConsentChanged,
     required TResult Function(FormSubmitted value) formSubmitted,
     required TResult Function(FormReset value) formReset,
   }) {
@@ -790,6 +864,9 @@ class _$PrivacyConsentChangedImpl implements PrivacyConsentChanged {
     TResult? Function(PrivacyConsentChanged value)? privacyConsentChanged,
     TResult? Function(DataProcessingConsentChanged value)?
     dataProcessingConsentChanged,
+    TResult? Function(LocationConsentChanged value)? locationConsentChanged,
+    TResult? Function(BackgroundLocationConsentChanged value)?
+    backgroundLocationConsentChanged,
     TResult? Function(FormSubmitted value)? formSubmitted,
     TResult? Function(FormReset value)? formReset,
   }) {
@@ -805,6 +882,9 @@ class _$PrivacyConsentChangedImpl implements PrivacyConsentChanged {
     TResult Function(PrivacyConsentChanged value)? privacyConsentChanged,
     TResult Function(DataProcessingConsentChanged value)?
     dataProcessingConsentChanged,
+    TResult Function(LocationConsentChanged value)? locationConsentChanged,
+    TResult Function(BackgroundLocationConsentChanged value)?
+    backgroundLocationConsentChanged,
     TResult Function(FormSubmitted value)? formSubmitted,
     TResult Function(FormReset value)? formReset,
     required TResult orElse(),
@@ -913,6 +993,8 @@ class _$DataProcessingConsentChangedImpl
     required TResult Function(String employmentStatus) employmentStatusChanged,
     required TResult Function(bool consent) privacyConsentChanged,
     required TResult Function(bool consent) dataProcessingConsentChanged,
+    required TResult Function(bool consent) locationConsentChanged,
+    required TResult Function(bool consent) backgroundLocationConsentChanged,
     required TResult Function() formSubmitted,
     required TResult Function() formReset,
   }) {
@@ -927,6 +1009,8 @@ class _$DataProcessingConsentChangedImpl
     TResult? Function(String employmentStatus)? employmentStatusChanged,
     TResult? Function(bool consent)? privacyConsentChanged,
     TResult? Function(bool consent)? dataProcessingConsentChanged,
+    TResult? Function(bool consent)? locationConsentChanged,
+    TResult? Function(bool consent)? backgroundLocationConsentChanged,
     TResult? Function()? formSubmitted,
     TResult? Function()? formReset,
   }) {
@@ -941,6 +1025,8 @@ class _$DataProcessingConsentChangedImpl
     TResult Function(String employmentStatus)? employmentStatusChanged,
     TResult Function(bool consent)? privacyConsentChanged,
     TResult Function(bool consent)? dataProcessingConsentChanged,
+    TResult Function(bool consent)? locationConsentChanged,
+    TResult Function(bool consent)? backgroundLocationConsentChanged,
     TResult Function()? formSubmitted,
     TResult Function()? formReset,
     required TResult orElse(),
@@ -962,6 +1048,10 @@ class _$DataProcessingConsentChangedImpl
     privacyConsentChanged,
     required TResult Function(DataProcessingConsentChanged value)
     dataProcessingConsentChanged,
+    required TResult Function(LocationConsentChanged value)
+    locationConsentChanged,
+    required TResult Function(BackgroundLocationConsentChanged value)
+    backgroundLocationConsentChanged,
     required TResult Function(FormSubmitted value) formSubmitted,
     required TResult Function(FormReset value) formReset,
   }) {
@@ -977,6 +1067,9 @@ class _$DataProcessingConsentChangedImpl
     TResult? Function(PrivacyConsentChanged value)? privacyConsentChanged,
     TResult? Function(DataProcessingConsentChanged value)?
     dataProcessingConsentChanged,
+    TResult? Function(LocationConsentChanged value)? locationConsentChanged,
+    TResult? Function(BackgroundLocationConsentChanged value)?
+    backgroundLocationConsentChanged,
     TResult? Function(FormSubmitted value)? formSubmitted,
     TResult? Function(FormReset value)? formReset,
   }) {
@@ -992,6 +1085,9 @@ class _$DataProcessingConsentChangedImpl
     TResult Function(PrivacyConsentChanged value)? privacyConsentChanged,
     TResult Function(DataProcessingConsentChanged value)?
     dataProcessingConsentChanged,
+    TResult Function(LocationConsentChanged value)? locationConsentChanged,
+    TResult Function(BackgroundLocationConsentChanged value)?
+    backgroundLocationConsentChanged,
     TResult Function(FormSubmitted value)? formSubmitted,
     TResult Function(FormReset value)? formReset,
     required TResult orElse(),
@@ -1014,6 +1110,409 @@ abstract class DataProcessingConsentChanged implements PersonalInfoEvent {
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$DataProcessingConsentChangedImplCopyWith<
     _$DataProcessingConsentChangedImpl
+  >
+  get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$LocationConsentChangedImplCopyWith<$Res> {
+  factory _$$LocationConsentChangedImplCopyWith(
+    _$LocationConsentChangedImpl value,
+    $Res Function(_$LocationConsentChangedImpl) then,
+  ) = __$$LocationConsentChangedImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({bool consent});
+}
+
+/// @nodoc
+class __$$LocationConsentChangedImplCopyWithImpl<$Res>
+    extends _$PersonalInfoEventCopyWithImpl<$Res, _$LocationConsentChangedImpl>
+    implements _$$LocationConsentChangedImplCopyWith<$Res> {
+  __$$LocationConsentChangedImplCopyWithImpl(
+    _$LocationConsentChangedImpl _value,
+    $Res Function(_$LocationConsentChangedImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of PersonalInfoEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? consent = null}) {
+    return _then(
+      _$LocationConsentChangedImpl(
+        null == consent
+            ? _value.consent
+            : consent // ignore: cast_nullable_to_non_nullable
+                as bool,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+
+class _$LocationConsentChangedImpl implements LocationConsentChanged {
+  const _$LocationConsentChangedImpl(this.consent);
+
+  @override
+  final bool consent;
+
+  @override
+  String toString() {
+    return 'PersonalInfoEvent.locationConsentChanged(consent: $consent)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$LocationConsentChangedImpl &&
+            (identical(other.consent, consent) || other.consent == consent));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, consent);
+
+  /// Create a copy of PersonalInfoEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$LocationConsentChangedImplCopyWith<_$LocationConsentChangedImpl>
+  get copyWith =>
+      __$$LocationConsentChangedImplCopyWithImpl<_$LocationConsentChangedImpl>(
+        this,
+        _$identity,
+      );
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String ageGroup) ageGroupChanged,
+    required TResult Function(String gender) genderChanged,
+    required TResult Function(String employmentStatus) employmentStatusChanged,
+    required TResult Function(bool consent) privacyConsentChanged,
+    required TResult Function(bool consent) dataProcessingConsentChanged,
+    required TResult Function(bool consent) locationConsentChanged,
+    required TResult Function(bool consent) backgroundLocationConsentChanged,
+    required TResult Function() formSubmitted,
+    required TResult Function() formReset,
+  }) {
+    return locationConsentChanged(consent);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(String ageGroup)? ageGroupChanged,
+    TResult? Function(String gender)? genderChanged,
+    TResult? Function(String employmentStatus)? employmentStatusChanged,
+    TResult? Function(bool consent)? privacyConsentChanged,
+    TResult? Function(bool consent)? dataProcessingConsentChanged,
+    TResult? Function(bool consent)? locationConsentChanged,
+    TResult? Function(bool consent)? backgroundLocationConsentChanged,
+    TResult? Function()? formSubmitted,
+    TResult? Function()? formReset,
+  }) {
+    return locationConsentChanged?.call(consent);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String ageGroup)? ageGroupChanged,
+    TResult Function(String gender)? genderChanged,
+    TResult Function(String employmentStatus)? employmentStatusChanged,
+    TResult Function(bool consent)? privacyConsentChanged,
+    TResult Function(bool consent)? dataProcessingConsentChanged,
+    TResult Function(bool consent)? locationConsentChanged,
+    TResult Function(bool consent)? backgroundLocationConsentChanged,
+    TResult Function()? formSubmitted,
+    TResult Function()? formReset,
+    required TResult orElse(),
+  }) {
+    if (locationConsentChanged != null) {
+      return locationConsentChanged(consent);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(AgeGroupChanged value) ageGroupChanged,
+    required TResult Function(GenderChanged value) genderChanged,
+    required TResult Function(EmploymentStatusChanged value)
+    employmentStatusChanged,
+    required TResult Function(PrivacyConsentChanged value)
+    privacyConsentChanged,
+    required TResult Function(DataProcessingConsentChanged value)
+    dataProcessingConsentChanged,
+    required TResult Function(LocationConsentChanged value)
+    locationConsentChanged,
+    required TResult Function(BackgroundLocationConsentChanged value)
+    backgroundLocationConsentChanged,
+    required TResult Function(FormSubmitted value) formSubmitted,
+    required TResult Function(FormReset value) formReset,
+  }) {
+    return locationConsentChanged(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(AgeGroupChanged value)? ageGroupChanged,
+    TResult? Function(GenderChanged value)? genderChanged,
+    TResult? Function(EmploymentStatusChanged value)? employmentStatusChanged,
+    TResult? Function(PrivacyConsentChanged value)? privacyConsentChanged,
+    TResult? Function(DataProcessingConsentChanged value)?
+    dataProcessingConsentChanged,
+    TResult? Function(LocationConsentChanged value)? locationConsentChanged,
+    TResult? Function(BackgroundLocationConsentChanged value)?
+    backgroundLocationConsentChanged,
+    TResult? Function(FormSubmitted value)? formSubmitted,
+    TResult? Function(FormReset value)? formReset,
+  }) {
+    return locationConsentChanged?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(AgeGroupChanged value)? ageGroupChanged,
+    TResult Function(GenderChanged value)? genderChanged,
+    TResult Function(EmploymentStatusChanged value)? employmentStatusChanged,
+    TResult Function(PrivacyConsentChanged value)? privacyConsentChanged,
+    TResult Function(DataProcessingConsentChanged value)?
+    dataProcessingConsentChanged,
+    TResult Function(LocationConsentChanged value)? locationConsentChanged,
+    TResult Function(BackgroundLocationConsentChanged value)?
+    backgroundLocationConsentChanged,
+    TResult Function(FormSubmitted value)? formSubmitted,
+    TResult Function(FormReset value)? formReset,
+    required TResult orElse(),
+  }) {
+    if (locationConsentChanged != null) {
+      return locationConsentChanged(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class LocationConsentChanged implements PersonalInfoEvent {
+  const factory LocationConsentChanged(final bool consent) =
+      _$LocationConsentChangedImpl;
+
+  bool get consent;
+
+  /// Create a copy of PersonalInfoEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$LocationConsentChangedImplCopyWith<_$LocationConsentChangedImpl>
+  get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$BackgroundLocationConsentChangedImplCopyWith<$Res> {
+  factory _$$BackgroundLocationConsentChangedImplCopyWith(
+    _$BackgroundLocationConsentChangedImpl value,
+    $Res Function(_$BackgroundLocationConsentChangedImpl) then,
+  ) = __$$BackgroundLocationConsentChangedImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({bool consent});
+}
+
+/// @nodoc
+class __$$BackgroundLocationConsentChangedImplCopyWithImpl<$Res>
+    extends
+        _$PersonalInfoEventCopyWithImpl<
+          $Res,
+          _$BackgroundLocationConsentChangedImpl
+        >
+    implements _$$BackgroundLocationConsentChangedImplCopyWith<$Res> {
+  __$$BackgroundLocationConsentChangedImplCopyWithImpl(
+    _$BackgroundLocationConsentChangedImpl _value,
+    $Res Function(_$BackgroundLocationConsentChangedImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of PersonalInfoEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? consent = null}) {
+    return _then(
+      _$BackgroundLocationConsentChangedImpl(
+        null == consent
+            ? _value.consent
+            : consent // ignore: cast_nullable_to_non_nullable
+                as bool,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+
+class _$BackgroundLocationConsentChangedImpl
+    implements BackgroundLocationConsentChanged {
+  const _$BackgroundLocationConsentChangedImpl(this.consent);
+
+  @override
+  final bool consent;
+
+  @override
+  String toString() {
+    return 'PersonalInfoEvent.backgroundLocationConsentChanged(consent: $consent)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$BackgroundLocationConsentChangedImpl &&
+            (identical(other.consent, consent) || other.consent == consent));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, consent);
+
+  /// Create a copy of PersonalInfoEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$BackgroundLocationConsentChangedImplCopyWith<
+    _$BackgroundLocationConsentChangedImpl
+  >
+  get copyWith => __$$BackgroundLocationConsentChangedImplCopyWithImpl<
+    _$BackgroundLocationConsentChangedImpl
+  >(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String ageGroup) ageGroupChanged,
+    required TResult Function(String gender) genderChanged,
+    required TResult Function(String employmentStatus) employmentStatusChanged,
+    required TResult Function(bool consent) privacyConsentChanged,
+    required TResult Function(bool consent) dataProcessingConsentChanged,
+    required TResult Function(bool consent) locationConsentChanged,
+    required TResult Function(bool consent) backgroundLocationConsentChanged,
+    required TResult Function() formSubmitted,
+    required TResult Function() formReset,
+  }) {
+    return backgroundLocationConsentChanged(consent);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(String ageGroup)? ageGroupChanged,
+    TResult? Function(String gender)? genderChanged,
+    TResult? Function(String employmentStatus)? employmentStatusChanged,
+    TResult? Function(bool consent)? privacyConsentChanged,
+    TResult? Function(bool consent)? dataProcessingConsentChanged,
+    TResult? Function(bool consent)? locationConsentChanged,
+    TResult? Function(bool consent)? backgroundLocationConsentChanged,
+    TResult? Function()? formSubmitted,
+    TResult? Function()? formReset,
+  }) {
+    return backgroundLocationConsentChanged?.call(consent);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String ageGroup)? ageGroupChanged,
+    TResult Function(String gender)? genderChanged,
+    TResult Function(String employmentStatus)? employmentStatusChanged,
+    TResult Function(bool consent)? privacyConsentChanged,
+    TResult Function(bool consent)? dataProcessingConsentChanged,
+    TResult Function(bool consent)? locationConsentChanged,
+    TResult Function(bool consent)? backgroundLocationConsentChanged,
+    TResult Function()? formSubmitted,
+    TResult Function()? formReset,
+    required TResult orElse(),
+  }) {
+    if (backgroundLocationConsentChanged != null) {
+      return backgroundLocationConsentChanged(consent);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(AgeGroupChanged value) ageGroupChanged,
+    required TResult Function(GenderChanged value) genderChanged,
+    required TResult Function(EmploymentStatusChanged value)
+    employmentStatusChanged,
+    required TResult Function(PrivacyConsentChanged value)
+    privacyConsentChanged,
+    required TResult Function(DataProcessingConsentChanged value)
+    dataProcessingConsentChanged,
+    required TResult Function(LocationConsentChanged value)
+    locationConsentChanged,
+    required TResult Function(BackgroundLocationConsentChanged value)
+    backgroundLocationConsentChanged,
+    required TResult Function(FormSubmitted value) formSubmitted,
+    required TResult Function(FormReset value) formReset,
+  }) {
+    return backgroundLocationConsentChanged(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(AgeGroupChanged value)? ageGroupChanged,
+    TResult? Function(GenderChanged value)? genderChanged,
+    TResult? Function(EmploymentStatusChanged value)? employmentStatusChanged,
+    TResult? Function(PrivacyConsentChanged value)? privacyConsentChanged,
+    TResult? Function(DataProcessingConsentChanged value)?
+    dataProcessingConsentChanged,
+    TResult? Function(LocationConsentChanged value)? locationConsentChanged,
+    TResult? Function(BackgroundLocationConsentChanged value)?
+    backgroundLocationConsentChanged,
+    TResult? Function(FormSubmitted value)? formSubmitted,
+    TResult? Function(FormReset value)? formReset,
+  }) {
+    return backgroundLocationConsentChanged?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(AgeGroupChanged value)? ageGroupChanged,
+    TResult Function(GenderChanged value)? genderChanged,
+    TResult Function(EmploymentStatusChanged value)? employmentStatusChanged,
+    TResult Function(PrivacyConsentChanged value)? privacyConsentChanged,
+    TResult Function(DataProcessingConsentChanged value)?
+    dataProcessingConsentChanged,
+    TResult Function(LocationConsentChanged value)? locationConsentChanged,
+    TResult Function(BackgroundLocationConsentChanged value)?
+    backgroundLocationConsentChanged,
+    TResult Function(FormSubmitted value)? formSubmitted,
+    TResult Function(FormReset value)? formReset,
+    required TResult orElse(),
+  }) {
+    if (backgroundLocationConsentChanged != null) {
+      return backgroundLocationConsentChanged(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class BackgroundLocationConsentChanged implements PersonalInfoEvent {
+  const factory BackgroundLocationConsentChanged(final bool consent) =
+      _$BackgroundLocationConsentChangedImpl;
+
+  bool get consent;
+
+  /// Create a copy of PersonalInfoEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$BackgroundLocationConsentChangedImplCopyWith<
+    _$BackgroundLocationConsentChangedImpl
   >
   get copyWith => throw _privateConstructorUsedError;
 }
@@ -1066,6 +1565,8 @@ class _$FormSubmittedImpl implements FormSubmitted {
     required TResult Function(String employmentStatus) employmentStatusChanged,
     required TResult Function(bool consent) privacyConsentChanged,
     required TResult Function(bool consent) dataProcessingConsentChanged,
+    required TResult Function(bool consent) locationConsentChanged,
+    required TResult Function(bool consent) backgroundLocationConsentChanged,
     required TResult Function() formSubmitted,
     required TResult Function() formReset,
   }) {
@@ -1080,6 +1581,8 @@ class _$FormSubmittedImpl implements FormSubmitted {
     TResult? Function(String employmentStatus)? employmentStatusChanged,
     TResult? Function(bool consent)? privacyConsentChanged,
     TResult? Function(bool consent)? dataProcessingConsentChanged,
+    TResult? Function(bool consent)? locationConsentChanged,
+    TResult? Function(bool consent)? backgroundLocationConsentChanged,
     TResult? Function()? formSubmitted,
     TResult? Function()? formReset,
   }) {
@@ -1094,6 +1597,8 @@ class _$FormSubmittedImpl implements FormSubmitted {
     TResult Function(String employmentStatus)? employmentStatusChanged,
     TResult Function(bool consent)? privacyConsentChanged,
     TResult Function(bool consent)? dataProcessingConsentChanged,
+    TResult Function(bool consent)? locationConsentChanged,
+    TResult Function(bool consent)? backgroundLocationConsentChanged,
     TResult Function()? formSubmitted,
     TResult Function()? formReset,
     required TResult orElse(),
@@ -1115,6 +1620,10 @@ class _$FormSubmittedImpl implements FormSubmitted {
     privacyConsentChanged,
     required TResult Function(DataProcessingConsentChanged value)
     dataProcessingConsentChanged,
+    required TResult Function(LocationConsentChanged value)
+    locationConsentChanged,
+    required TResult Function(BackgroundLocationConsentChanged value)
+    backgroundLocationConsentChanged,
     required TResult Function(FormSubmitted value) formSubmitted,
     required TResult Function(FormReset value) formReset,
   }) {
@@ -1130,6 +1639,9 @@ class _$FormSubmittedImpl implements FormSubmitted {
     TResult? Function(PrivacyConsentChanged value)? privacyConsentChanged,
     TResult? Function(DataProcessingConsentChanged value)?
     dataProcessingConsentChanged,
+    TResult? Function(LocationConsentChanged value)? locationConsentChanged,
+    TResult? Function(BackgroundLocationConsentChanged value)?
+    backgroundLocationConsentChanged,
     TResult? Function(FormSubmitted value)? formSubmitted,
     TResult? Function(FormReset value)? formReset,
   }) {
@@ -1145,6 +1657,9 @@ class _$FormSubmittedImpl implements FormSubmitted {
     TResult Function(PrivacyConsentChanged value)? privacyConsentChanged,
     TResult Function(DataProcessingConsentChanged value)?
     dataProcessingConsentChanged,
+    TResult Function(LocationConsentChanged value)? locationConsentChanged,
+    TResult Function(BackgroundLocationConsentChanged value)?
+    backgroundLocationConsentChanged,
     TResult Function(FormSubmitted value)? formSubmitted,
     TResult Function(FormReset value)? formReset,
     required TResult orElse(),
@@ -1208,6 +1723,8 @@ class _$FormResetImpl implements FormReset {
     required TResult Function(String employmentStatus) employmentStatusChanged,
     required TResult Function(bool consent) privacyConsentChanged,
     required TResult Function(bool consent) dataProcessingConsentChanged,
+    required TResult Function(bool consent) locationConsentChanged,
+    required TResult Function(bool consent) backgroundLocationConsentChanged,
     required TResult Function() formSubmitted,
     required TResult Function() formReset,
   }) {
@@ -1222,6 +1739,8 @@ class _$FormResetImpl implements FormReset {
     TResult? Function(String employmentStatus)? employmentStatusChanged,
     TResult? Function(bool consent)? privacyConsentChanged,
     TResult? Function(bool consent)? dataProcessingConsentChanged,
+    TResult? Function(bool consent)? locationConsentChanged,
+    TResult? Function(bool consent)? backgroundLocationConsentChanged,
     TResult? Function()? formSubmitted,
     TResult? Function()? formReset,
   }) {
@@ -1236,6 +1755,8 @@ class _$FormResetImpl implements FormReset {
     TResult Function(String employmentStatus)? employmentStatusChanged,
     TResult Function(bool consent)? privacyConsentChanged,
     TResult Function(bool consent)? dataProcessingConsentChanged,
+    TResult Function(bool consent)? locationConsentChanged,
+    TResult Function(bool consent)? backgroundLocationConsentChanged,
     TResult Function()? formSubmitted,
     TResult Function()? formReset,
     required TResult orElse(),
@@ -1257,6 +1778,10 @@ class _$FormResetImpl implements FormReset {
     privacyConsentChanged,
     required TResult Function(DataProcessingConsentChanged value)
     dataProcessingConsentChanged,
+    required TResult Function(LocationConsentChanged value)
+    locationConsentChanged,
+    required TResult Function(BackgroundLocationConsentChanged value)
+    backgroundLocationConsentChanged,
     required TResult Function(FormSubmitted value) formSubmitted,
     required TResult Function(FormReset value) formReset,
   }) {
@@ -1272,6 +1797,9 @@ class _$FormResetImpl implements FormReset {
     TResult? Function(PrivacyConsentChanged value)? privacyConsentChanged,
     TResult? Function(DataProcessingConsentChanged value)?
     dataProcessingConsentChanged,
+    TResult? Function(LocationConsentChanged value)? locationConsentChanged,
+    TResult? Function(BackgroundLocationConsentChanged value)?
+    backgroundLocationConsentChanged,
     TResult? Function(FormSubmitted value)? formSubmitted,
     TResult? Function(FormReset value)? formReset,
   }) {
@@ -1287,6 +1815,9 @@ class _$FormResetImpl implements FormReset {
     TResult Function(PrivacyConsentChanged value)? privacyConsentChanged,
     TResult Function(DataProcessingConsentChanged value)?
     dataProcessingConsentChanged,
+    TResult Function(LocationConsentChanged value)? locationConsentChanged,
+    TResult Function(BackgroundLocationConsentChanged value)?
+    backgroundLocationConsentChanged,
     TResult Function(FormSubmitted value)? formSubmitted,
     TResult Function(FormReset value)? formReset,
     required TResult orElse(),
@@ -1310,6 +1841,8 @@ mixin _$PersonalInfoState {
       throw _privateConstructorUsedError;
   PrivacyConsentInput get privacyConsent => throw _privateConstructorUsedError;
   bool get dataProcessingConsent => throw _privateConstructorUsedError;
+  bool get locationConsent => throw _privateConstructorUsedError;
+  bool get backgroundLocationConsent => throw _privateConstructorUsedError;
   bool get isValid => throw _privateConstructorUsedError;
   FormzSubmissionStatus get status => throw _privateConstructorUsedError;
   PersonalInfo? get personalInfo => throw _privateConstructorUsedError;
@@ -1335,6 +1868,8 @@ abstract class $PersonalInfoStateCopyWith<$Res> {
     EmploymentStatusInput employmentStatus,
     PrivacyConsentInput privacyConsent,
     bool dataProcessingConsent,
+    bool locationConsent,
+    bool backgroundLocationConsent,
     bool isValid,
     FormzSubmissionStatus status,
     PersonalInfo? personalInfo,
@@ -1364,6 +1899,8 @@ class _$PersonalInfoStateCopyWithImpl<$Res, $Val extends PersonalInfoState>
     Object? employmentStatus = null,
     Object? privacyConsent = null,
     Object? dataProcessingConsent = null,
+    Object? locationConsent = null,
+    Object? backgroundLocationConsent = null,
     Object? isValid = null,
     Object? status = null,
     Object? personalInfo = freezed,
@@ -1395,6 +1932,16 @@ class _$PersonalInfoStateCopyWithImpl<$Res, $Val extends PersonalInfoState>
                 null == dataProcessingConsent
                     ? _value.dataProcessingConsent
                     : dataProcessingConsent // ignore: cast_nullable_to_non_nullable
+                        as bool,
+            locationConsent:
+                null == locationConsent
+                    ? _value.locationConsent
+                    : locationConsent // ignore: cast_nullable_to_non_nullable
+                        as bool,
+            backgroundLocationConsent:
+                null == backgroundLocationConsent
+                    ? _value.backgroundLocationConsent
+                    : backgroundLocationConsent // ignore: cast_nullable_to_non_nullable
                         as bool,
             isValid:
                 null == isValid
@@ -1451,6 +1998,8 @@ abstract class _$$PersonalInfoStateImplCopyWith<$Res>
     EmploymentStatusInput employmentStatus,
     PrivacyConsentInput privacyConsent,
     bool dataProcessingConsent,
+    bool locationConsent,
+    bool backgroundLocationConsent,
     bool isValid,
     FormzSubmissionStatus status,
     PersonalInfo? personalInfo,
@@ -1480,6 +2029,8 @@ class __$$PersonalInfoStateImplCopyWithImpl<$Res>
     Object? employmentStatus = null,
     Object? privacyConsent = null,
     Object? dataProcessingConsent = null,
+    Object? locationConsent = null,
+    Object? backgroundLocationConsent = null,
     Object? isValid = null,
     Object? status = null,
     Object? personalInfo = freezed,
@@ -1511,6 +2062,16 @@ class __$$PersonalInfoStateImplCopyWithImpl<$Res>
             null == dataProcessingConsent
                 ? _value.dataProcessingConsent
                 : dataProcessingConsent // ignore: cast_nullable_to_non_nullable
+                    as bool,
+        locationConsent:
+            null == locationConsent
+                ? _value.locationConsent
+                : locationConsent // ignore: cast_nullable_to_non_nullable
+                    as bool,
+        backgroundLocationConsent:
+            null == backgroundLocationConsent
+                ? _value.backgroundLocationConsent
+                : backgroundLocationConsent // ignore: cast_nullable_to_non_nullable
                     as bool,
         isValid:
             null == isValid
@@ -1546,6 +2107,8 @@ class _$PersonalInfoStateImpl implements _PersonalInfoState {
     this.employmentStatus = const EmploymentStatusInput.pure(),
     this.privacyConsent = const PrivacyConsentInput.pure(),
     this.dataProcessingConsent = false,
+    this.locationConsent = false,
+    this.backgroundLocationConsent = false,
     this.isValid = false,
     this.status = FormzSubmissionStatus.initial,
     this.personalInfo,
@@ -1569,6 +2132,12 @@ class _$PersonalInfoStateImpl implements _PersonalInfoState {
   final bool dataProcessingConsent;
   @override
   @JsonKey()
+  final bool locationConsent;
+  @override
+  @JsonKey()
+  final bool backgroundLocationConsent;
+  @override
+  @JsonKey()
   final bool isValid;
   @override
   @JsonKey()
@@ -1580,7 +2149,7 @@ class _$PersonalInfoStateImpl implements _PersonalInfoState {
 
   @override
   String toString() {
-    return 'PersonalInfoState(ageGroup: $ageGroup, gender: $gender, employmentStatus: $employmentStatus, privacyConsent: $privacyConsent, dataProcessingConsent: $dataProcessingConsent, isValid: $isValid, status: $status, personalInfo: $personalInfo, errorMessage: $errorMessage)';
+    return 'PersonalInfoState(ageGroup: $ageGroup, gender: $gender, employmentStatus: $employmentStatus, privacyConsent: $privacyConsent, dataProcessingConsent: $dataProcessingConsent, locationConsent: $locationConsent, backgroundLocationConsent: $backgroundLocationConsent, isValid: $isValid, status: $status, personalInfo: $personalInfo, errorMessage: $errorMessage)';
   }
 
   @override
@@ -1597,6 +2166,13 @@ class _$PersonalInfoStateImpl implements _PersonalInfoState {
                 other.privacyConsent == privacyConsent) &&
             (identical(other.dataProcessingConsent, dataProcessingConsent) ||
                 other.dataProcessingConsent == dataProcessingConsent) &&
+            (identical(other.locationConsent, locationConsent) ||
+                other.locationConsent == locationConsent) &&
+            (identical(
+                  other.backgroundLocationConsent,
+                  backgroundLocationConsent,
+                ) ||
+                other.backgroundLocationConsent == backgroundLocationConsent) &&
             (identical(other.isValid, isValid) || other.isValid == isValid) &&
             (identical(other.status, status) || other.status == status) &&
             (identical(other.personalInfo, personalInfo) ||
@@ -1613,6 +2189,8 @@ class _$PersonalInfoStateImpl implements _PersonalInfoState {
     employmentStatus,
     privacyConsent,
     dataProcessingConsent,
+    locationConsent,
+    backgroundLocationConsent,
     isValid,
     status,
     personalInfo,
@@ -1638,6 +2216,8 @@ abstract class _PersonalInfoState implements PersonalInfoState {
     final EmploymentStatusInput employmentStatus,
     final PrivacyConsentInput privacyConsent,
     final bool dataProcessingConsent,
+    final bool locationConsent,
+    final bool backgroundLocationConsent,
     final bool isValid,
     final FormzSubmissionStatus status,
     final PersonalInfo? personalInfo,
@@ -1654,6 +2234,10 @@ abstract class _PersonalInfoState implements PersonalInfoState {
   PrivacyConsentInput get privacyConsent;
   @override
   bool get dataProcessingConsent;
+  @override
+  bool get locationConsent;
+  @override
+  bool get backgroundLocationConsent;
   @override
   bool get isValid;
   @override

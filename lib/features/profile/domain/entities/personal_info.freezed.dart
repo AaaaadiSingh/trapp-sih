@@ -30,6 +30,8 @@ mixin _$PersonalInfo {
   String get annualIncome => throw _privateConstructorUsedError;
   bool get privacyConsent => throw _privateConstructorUsedError;
   bool get dataProcessingConsent => throw _privateConstructorUsedError;
+  bool get locationConsent => throw _privateConstructorUsedError;
+  bool get backgroundLocationConsent => throw _privateConstructorUsedError;
   DateTime? get createdAt => throw _privateConstructorUsedError;
   DateTime? get updatedAt => throw _privateConstructorUsedError;
 
@@ -60,6 +62,8 @@ abstract class $PersonalInfoCopyWith<$Res> {
     String annualIncome,
     bool privacyConsent,
     bool dataProcessingConsent,
+    bool locationConsent,
+    bool backgroundLocationConsent,
     DateTime? createdAt,
     DateTime? updatedAt,
   });
@@ -89,6 +93,8 @@ class _$PersonalInfoCopyWithImpl<$Res, $Val extends PersonalInfo>
     Object? annualIncome = null,
     Object? privacyConsent = null,
     Object? dataProcessingConsent = null,
+    Object? locationConsent = null,
+    Object? backgroundLocationConsent = null,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
   }) {
@@ -139,6 +145,16 @@ class _$PersonalInfoCopyWithImpl<$Res, $Val extends PersonalInfo>
                     ? _value.dataProcessingConsent
                     : dataProcessingConsent // ignore: cast_nullable_to_non_nullable
                         as bool,
+            locationConsent:
+                null == locationConsent
+                    ? _value.locationConsent
+                    : locationConsent // ignore: cast_nullable_to_non_nullable
+                        as bool,
+            backgroundLocationConsent:
+                null == backgroundLocationConsent
+                    ? _value.backgroundLocationConsent
+                    : backgroundLocationConsent // ignore: cast_nullable_to_non_nullable
+                        as bool,
             createdAt:
                 freezed == createdAt
                     ? _value.createdAt
@@ -174,6 +190,8 @@ abstract class _$$PersonalInfoImplCopyWith<$Res>
     String annualIncome,
     bool privacyConsent,
     bool dataProcessingConsent,
+    bool locationConsent,
+    bool backgroundLocationConsent,
     DateTime? createdAt,
     DateTime? updatedAt,
   });
@@ -202,6 +220,8 @@ class __$$PersonalInfoImplCopyWithImpl<$Res>
     Object? annualIncome = null,
     Object? privacyConsent = null,
     Object? dataProcessingConsent = null,
+    Object? locationConsent = null,
+    Object? backgroundLocationConsent = null,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
   }) {
@@ -252,6 +272,16 @@ class __$$PersonalInfoImplCopyWithImpl<$Res>
                 ? _value.dataProcessingConsent
                 : dataProcessingConsent // ignore: cast_nullable_to_non_nullable
                     as bool,
+        locationConsent:
+            null == locationConsent
+                ? _value.locationConsent
+                : locationConsent // ignore: cast_nullable_to_non_nullable
+                    as bool,
+        backgroundLocationConsent:
+            null == backgroundLocationConsent
+                ? _value.backgroundLocationConsent
+                : backgroundLocationConsent // ignore: cast_nullable_to_non_nullable
+                    as bool,
         createdAt:
             freezed == createdAt
                 ? _value.createdAt
@@ -280,6 +310,8 @@ class _$PersonalInfoImpl implements _PersonalInfo {
     this.annualIncome = '',
     this.privacyConsent = false,
     this.dataProcessingConsent = false,
+    this.locationConsent = false,
+    this.backgroundLocationConsent = false,
     this.createdAt,
     this.updatedAt,
   });
@@ -315,13 +347,19 @@ class _$PersonalInfoImpl implements _PersonalInfo {
   @JsonKey()
   final bool dataProcessingConsent;
   @override
+  @JsonKey()
+  final bool locationConsent;
+  @override
+  @JsonKey()
+  final bool backgroundLocationConsent;
+  @override
   final DateTime? createdAt;
   @override
   final DateTime? updatedAt;
 
   @override
   String toString() {
-    return 'PersonalInfo(fullName: $fullName, email: $email, phoneNumber: $phoneNumber, ageGroup: $ageGroup, gender: $gender, employmentStatus: $employmentStatus, annualIncome: $annualIncome, privacyConsent: $privacyConsent, dataProcessingConsent: $dataProcessingConsent, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'PersonalInfo(fullName: $fullName, email: $email, phoneNumber: $phoneNumber, ageGroup: $ageGroup, gender: $gender, employmentStatus: $employmentStatus, annualIncome: $annualIncome, privacyConsent: $privacyConsent, dataProcessingConsent: $dataProcessingConsent, locationConsent: $locationConsent, backgroundLocationConsent: $backgroundLocationConsent, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -345,6 +383,13 @@ class _$PersonalInfoImpl implements _PersonalInfo {
                 other.privacyConsent == privacyConsent) &&
             (identical(other.dataProcessingConsent, dataProcessingConsent) ||
                 other.dataProcessingConsent == dataProcessingConsent) &&
+            (identical(other.locationConsent, locationConsent) ||
+                other.locationConsent == locationConsent) &&
+            (identical(
+                  other.backgroundLocationConsent,
+                  backgroundLocationConsent,
+                ) ||
+                other.backgroundLocationConsent == backgroundLocationConsent) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
@@ -364,6 +409,8 @@ class _$PersonalInfoImpl implements _PersonalInfo {
     annualIncome,
     privacyConsent,
     dataProcessingConsent,
+    locationConsent,
+    backgroundLocationConsent,
     createdAt,
     updatedAt,
   );
@@ -393,6 +440,8 @@ abstract class _PersonalInfo implements PersonalInfo {
     final String annualIncome,
     final bool privacyConsent,
     final bool dataProcessingConsent,
+    final bool locationConsent,
+    final bool backgroundLocationConsent,
     final DateTime? createdAt,
     final DateTime? updatedAt,
   }) = _$PersonalInfoImpl;
@@ -418,6 +467,10 @@ abstract class _PersonalInfo implements PersonalInfo {
   bool get privacyConsent;
   @override
   bool get dataProcessingConsent;
+  @override
+  bool get locationConsent;
+  @override
+  bool get backgroundLocationConsent;
   @override
   DateTime? get createdAt;
   @override

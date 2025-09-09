@@ -17,6 +17,9 @@ _$PersonalInfoImpl _$$PersonalInfoImplFromJson(Map<String, dynamic> json) =>
       annualIncome: json['annualIncome'] as String? ?? '',
       privacyConsent: json['privacyConsent'] as bool? ?? false,
       dataProcessingConsent: json['dataProcessingConsent'] as bool? ?? false,
+      locationConsent: json['locationConsent'] as bool? ?? false,
+      backgroundLocationConsent:
+          json['backgroundLocationConsent'] as bool? ?? false,
       createdAt:
           json['createdAt'] == null
               ? null
@@ -38,6 +41,8 @@ Map<String, dynamic> _$$PersonalInfoImplToJson(_$PersonalInfoImpl instance) =>
       'annualIncome': instance.annualIncome,
       'privacyConsent': instance.privacyConsent,
       'dataProcessingConsent': instance.dataProcessingConsent,
+      'locationConsent': instance.locationConsent,
+      'backgroundLocationConsent': instance.backgroundLocationConsent,
       'createdAt': instance.createdAt?.toIso8601String(),
       'updatedAt': instance.updatedAt?.toIso8601String(),
     };

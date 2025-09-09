@@ -16,6 +16,8 @@ class PersonalInfoBloc extends Bloc<PersonalInfoEvent, PersonalInfoState> {
     on<AgeGroupChanged>(_onAgeGroupChanged);
     on<GenderChanged>(_onGenderChanged);
     on<EmploymentStatusChanged>(_onEmploymentStatusChanged);
+    on<LocationConsentChanged>(_onLocationConsentChanged);
+    on<BackgroundLocationConsentChanged>(_onBackgroundLocationConsentChanged);
     on<FormSubmitted>(_onFormSubmitted);
     on<FormReset>(_onFormReset);
   }
@@ -70,7 +72,29 @@ class PersonalInfoBloc extends Bloc<PersonalInfoEvent, PersonalInfoState> {
     );
   }
 
+  void _onLocationConsentChanged(
+    LocationConsentChanged event,
+    Emitter<PersonalInfoState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        locationConsent: event.consent,
+        // If location consent is disabled, also disable background location
+        backgroundLocationConsent: event.consent ? state.backgroundLocationConsent : false,
+      ),
+    );
+  }
 
+  void _onBackgroundLocationConsentChanged(
+    BackgroundLocationConsentChanged event,
+    Emitter<PersonalInfoState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        backgroundLocationConsent: event.consent,
+      ),
+    );
+  }
 
   void _onFormSubmitted(
     FormSubmitted event,
@@ -99,6 +123,8 @@ class PersonalInfoBloc extends Bloc<PersonalInfoEvent, PersonalInfoState> {
         annualIncome: '', // Remove this field
         privacyConsent: false, // Will be handled in final review
         dataProcessingConsent: false, // Will be handled in final review
+        locationConsent: state.locationConsent,
+        backgroundLocationConsent: state.backgroundLocationConsent,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       );

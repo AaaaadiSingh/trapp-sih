@@ -15,6 +15,8 @@ class PersonalInfo with _$PersonalInfo {
     @Default('') String annualIncome,
     @Default(false) bool privacyConsent,
     @Default(false) bool dataProcessingConsent,
+    @Default(false) bool locationConsent,
+    @Default(false) bool backgroundLocationConsent,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) = _PersonalInfo;

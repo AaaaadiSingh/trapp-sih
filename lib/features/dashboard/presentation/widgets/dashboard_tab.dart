@@ -7,6 +7,8 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../domain/entities/dashboard_data.dart';
 import '../bloc/dashboard_bloc.dart';
+import 'location_tracking_card.dart';
+import 'trip_tracking_card.dart';
 
 class DashboardTab extends StatelessWidget {
   const DashboardTab({super.key});
@@ -67,6 +69,10 @@ class DashboardTab extends StatelessWidget {
           SizedBox(height: 16.h),
           _buildTripStatisticsCards(context, dashboardData),
           SizedBox(height: 16.h),
+          const LocationTrackingCard(),
+                SizedBox(height: 16.h),
+                const TripTrackingCard(),
+                SizedBox(height: 16.h),
           _buildCurrentTripsSection(context, dashboardData),
         ],
       ),
@@ -96,6 +102,10 @@ class DashboardTab extends StatelessWidget {
             ],
           ),
           SizedBox(height: 24.h),
+          const LocationTrackingCard(),
+                SizedBox(height: 24.h),
+                const TripTrackingCard(),
+                SizedBox(height: 24.h),
           _buildCurrentTripsSection(context, dashboardData),
         ],
       ),
