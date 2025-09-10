@@ -24,6 +24,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   final TripLoggingService _tripLoggingService;
   StreamSubscription<Position>? _locationSubscription;
   StreamSubscription<DetectedTrip>? _tripSubscription;
+  StreamSubscription<TripEvent>? _tripEventSubscription;
   StreamSubscription<TripLog>? _tripLogSubscription;
 
   DashboardBloc(
@@ -31,6 +32,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     this._tripDetectionService,
     this._tripLoggingService,
   ) : super(const DashboardState()) {
+    print('🏗️ DashboardBloc constructor called');
     on<TabChanged>(_onTabChanged);
     on<LoadDashboardData>(_onLoadDashboardData);
     on<StartLocationTracking>(_onStartLocationTracking);
@@ -55,15 +57,19 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     LoadDashboardData event,
     Emitter<DashboardState> emit,
   ) async {
+    print('📊 LoadDashboardData event triggered');
     emit(state.copyWith(isLoading: true, error: null));
 
     try {
+      // Auto-start location tracking and trip detection
+      await _initializeLocationServices();
+      
       // Simulate API call
       await Future.delayed(const Duration(seconds: 1));
 
       // Mock data
       final dashboardData = DashboardData(
-        totalTrips: 3,
+        totalTrips: _tripDetectionService.totalTrips,
         estimatedDistance: 12.5,
         estimatedTravelTime: 38,
         currentTrips: [
@@ -93,12 +99,59 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       emit(state.copyWith(
         isLoading: false,
         dashboardData: dashboardData,
+        isLocationTracking: _locationService.isTracking,
+        isTripDetectionActive: _tripDetectionService.isDetecting,
       ));
     } catch (e) {
       emit(state.copyWith(
         isLoading: false,
         error: e.toString(),
       ));
+    }
+  }
+
+  /// Initialize location services automatically
+  Future<void> _initializeLocationServices() async {
+    try {
+      print('🚀 Starting location services initialization...');
+      
+      // Check location service status
+      print('📍 Location tracking status: ${_locationService.isTracking}');
+      print('🔍 Trip detection status: ${_tripDetectionService.isDetecting}');
+      
+      // Start location tracking if not already started
+      if (!_locationService.isTracking) {
+        print('📍 Starting location tracking...');
+        final locationResult = await _locationService.startLocationTracking();
+        locationResult.fold(
+          (failure) => print('❌ Failed to start location tracking: ${failure.message}'),
+          (_) => print('✅ Location tracking started successfully'),
+        );
+      } else {
+        print('📍 Location tracking already active');
+      }
+      
+      // Start trip detection if not already started
+      if (!_tripDetectionService.isDetecting) {
+        print('🔍 Starting trip detection...');
+        final tripResult = await _tripDetectionService.startTripDetection();
+        tripResult.fold(
+          (failure) => print('❌ Failed to start trip detection: ${failure.message}'),
+          (_) => print('✅ Trip detection started successfully'),
+        );
+      } else {
+        print('🔍 Trip detection already active');
+      }
+      
+      // Start trip logging if not already started
+      final loggingResult = await _tripLoggingService.startLogging(_tripDetectionService);
+      loggingResult.fold(
+        (failure) => print('Failed to start trip logging: ${failure.message}'),
+        (_) => print('Trip logging started successfully'),
+      );
+      
+    } catch (e) {
+      print('Error initializing location services: $e');
     }
   }
 
@@ -169,6 +222,16 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
           // Listen to trip events
           _tripSubscription = _tripDetectionService.tripStream.listen(
             (trip) => add(DashboardEvent.tripDetected(trip)),
+          );
+          
+          // Listen to trip event stream for real-time updates
+          _tripEventSubscription = _tripDetectionService.tripEventStream.listen(
+            (event) {
+              if (event.type == TripEventType.tripEnded) {
+                // Refresh dashboard data when trip ends to update trip counter
+                add(const DashboardEvent.loadDashboardData());
+              }
+            },
           );
           
           // Listen to trip log events
@@ -262,6 +325,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   Future<void> close() async {
     await _locationSubscription?.cancel();
     await _tripSubscription?.cancel();
+    await _tripEventSubscription?.cancel();
     await _tripLogSubscription?.cancel();
     return super.close();
   }

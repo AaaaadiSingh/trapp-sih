@@ -2,11 +2,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:formz/formz.dart';
 import 'package:injectable/injectable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../domain/entities/review_confirmation.dart';
 import '../../domain/entities/personal_info.dart';
 import '../../domain/entities/location_demographics.dart';
 import 'review_form_inputs.dart';
+import '../../../../core/constants/app_constants.dart';
+import '../../../../core/di/injection_container.dart';
 
 part 'review_confirmation_bloc.freezed.dart';
 part 'review_confirmation_event.dart';
@@ -159,6 +162,10 @@ class ReviewConfirmationBloc
         submittedAt: DateTime.now(),
         submissionId: 'SUB_${DateTime.now().millisecondsSinceEpoch}',
       );
+
+      // Mark onboarding as completed
+      final prefs = sl<SharedPreferences>();
+      await prefs.setBool(AppConstants.onboardingCompletedKey, true);
 
       emit(
         state.copyWith(

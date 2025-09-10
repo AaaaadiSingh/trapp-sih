@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../features/profile/presentation/pages/personal_info_page.dart';
 import '../../features/profile/presentation/pages/travel_preferences_page.dart';
@@ -10,6 +11,9 @@ import '../../features/settings/presentation/pages/settings_page.dart';
 import '../../features/profile/domain/entities/personal_info.dart';
 import '../../features/profile/domain/entities/travel_preferences.dart';
 import '../../features/profile/domain/entities/location_demographics.dart';
+import '../../features/debug/debug_screen.dart';
+import '../constants/app_constants.dart';
+import '../di/injection_container.dart';
 
 class AppRouter {
   static const String personalInfo = '/personal-info';
@@ -18,9 +22,31 @@ class AppRouter {
   static const String reviewConfirmation = '/review-confirmation';
   static const String dashboard = '/dashboard';
   static const String settings = '/settings';
+  static const String debug = '/debug';
 
   static final GoRouter router = GoRouter(
     initialLocation: personalInfo,
+    redirect: (context, state) async {
+      // Check if onboarding is completed
+      final prefs = sl<SharedPreferences>();
+      final isOnboardingCompleted = prefs.getBool(AppConstants.onboardingCompletedKey) ?? false;
+      
+      // If user is on onboarding pages and onboarding is completed, redirect to dashboard
+      if (isOnboardingCompleted && 
+          (state.matchedLocation == personalInfo || 
+           state.matchedLocation == travelPreferences ||
+           state.matchedLocation == locationDemographics ||
+           state.matchedLocation == reviewConfirmation)) {
+        return dashboard;
+      }
+      
+      // If user is trying to access dashboard but onboarding is not completed, redirect to onboarding
+      if (!isOnboardingCompleted && state.matchedLocation == dashboard) {
+        return personalInfo;
+      }
+      
+      return null; // No redirect needed
+    },
     routes: [
       GoRoute(
         path: personalInfo,
@@ -90,6 +116,11 @@ class AppRouter {
         name: 'settings',
         builder: (context, state) => const SettingsPage(),
       ),
+      GoRoute(
+        path: debug,
+        name: 'debug',
+        builder: (context, state) => const DebugScreen(),
+      ),
     ],
   );
 }
@@ -133,6 +164,10 @@ class ProfileNavigator {
 
   static void toDashboard(BuildContext context) {
     context.go(AppRouter.dashboard);
+  }
+
+  static void toDebug(BuildContext context) {
+    context.go(AppRouter.debug);
   }
 
   static void goBack(BuildContext context) {

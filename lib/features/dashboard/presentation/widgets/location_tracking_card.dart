@@ -5,6 +5,7 @@ import 'package:geolocator/geolocator.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/services/trip_detection_service.dart';
 import '../bloc/dashboard_bloc.dart';
 
 class LocationTrackingCard extends StatelessWidget {
@@ -188,11 +189,22 @@ class LocationTrackingCard extends StatelessWidget {
           _buildStatItem(
             icon: Icons.speed,
             label: 'Speed',
-            value: '${(state.currentLocation?.speed ?? 0).toStringAsFixed(1)} m/s',
+            value: _getDisplaySpeed(state),
           ),
         ],
       ),
     );
+  }
+
+  String _getDisplaySpeed(DashboardState state) {
+    // If there's an active trip and it's in stopped state, show 0 speed
+    if (state.currentTrip != null && state.currentTrip!.state == TripState.stopped) {
+      return '0.0 m/s';
+    }
+    
+    // Otherwise show actual GPS speed
+    final speed = state.currentLocation?.speed ?? 0;
+    return '${speed.toStringAsFixed(1)} m/s';
   }
 
   Widget _buildStatItem({

@@ -96,7 +96,11 @@ class LocationService {
   /// Start continuous location tracking
   Future<Either<Failure, void>> startLocationTracking() async {
     try {
+      print('🔥 LocationService.startLocationTracking() called');
+      print('🔥 Has consent: $_hasLocationConsent, Is tracking: $_isTracking');
+      
       if (!_hasLocationConsent) {
+        print('🔥 Requesting location permission...');
         final permissionResult = await requestLocationPermission();
         if (permissionResult.isLeft()) {
           return permissionResult.fold(
@@ -108,14 +112,17 @@ class LocationService {
 
       if (_isTracking) {
         _logger.w('Location tracking is already active');
+        print('🔥 Location tracking already active');
         return const Right(null);
       }
 
       _logger.i('Starting location tracking');
+      print('🔥 Actually starting location tracking...');
       
       const LocationSettings locationSettings = LocationSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: 10, // Update every 10 meters
+        accuracy: LocationAccuracy.medium, // Balanced accuracy for battery optimization
+        distanceFilter: 10, // Update every 10 meters as required
+        timeLimit: Duration(minutes: 2), // Increased timeout for better GPS acquisition
       );
 
       _positionStream = Geolocator.getPositionStream(
@@ -128,7 +135,17 @@ class LocationService {
         },
         onError: (error) {
           _logger.e('Location tracking error: $error');
-          _locationController.addError(error);
+          
+          // Handle timeout gracefully - don't crash the app
+          if (error.toString().contains('TimeoutException')) {
+            _logger.w('GPS timeout - continuing with last known position');
+            // Use last known position if available
+            if (_lastKnownPosition != null) {
+              _locationController.add(_lastKnownPosition!);
+            }
+          } else {
+            _locationController.addError(error);
+          }
         },
       );
 

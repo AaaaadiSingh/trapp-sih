@@ -9,6 +9,7 @@ import 'core/theme/app_theme.dart';
 import 'core/routing/app_router.dart';
 
 void main() async {
+  print('🚀 App starting...');
   WidgetsFlutterBinding.ensureInitialized();
   
   // Configure system UI

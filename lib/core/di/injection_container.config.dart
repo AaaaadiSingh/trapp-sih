@@ -42,6 +42,7 @@ import '../../features/settings/domain/usecases/update_privacy_settings.dart'
     as _i813;
 import '../../features/settings/presentation/bloc/settings_bloc.dart' as _i585;
 import '../services/location_service.dart' as _i669;
+import '../services/notification_service.dart' as _i941;
 import '../services/trip_detection_service.dart' as _i33;
 import '../services/trip_logging_service.dart' as _i521;
 import 'injection.dart' as _i464;
@@ -71,12 +72,16 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i130.TravelPreferencesBloc(),
     );
     gh.singleton<_i669.LocationService>(() => _i669.LocationService());
+    gh.singleton<_i941.NotificationService>(() => _i941.NotificationService());
     gh.singleton<_i521.TripLoggingService>(() => _i521.TripLoggingService());
+    gh.singleton<_i33.TripDetectionService>(
+      () => _i33.TripDetectionService(
+        gh<_i669.LocationService>(),
+        gh<_i941.NotificationService>(),
+      ),
+    );
     gh.lazySingleton<_i188.SettingsRemoteDataSource>(
       () => _i188.SettingsRemoteDataSourceImpl(),
-    );
-    gh.singleton<_i33.TripDetectionService>(
-      () => _i33.TripDetectionService(gh<_i669.LocationService>()),
     );
     gh.lazySingleton<_i599.SettingsLocalDataSource>(
       () => _i599.SettingsLocalDataSourceImpl(

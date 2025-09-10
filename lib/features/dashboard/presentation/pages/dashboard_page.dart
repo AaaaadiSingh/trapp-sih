@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/di/injection_container.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/routing/app_router.dart';
 import '../bloc/dashboard_bloc.dart';
 import '../bloc/survey_bloc.dart';
 import '../bloc/trip_plan_bloc.dart';
@@ -58,11 +59,18 @@ class DashboardView extends StatelessWidget {
             centerTitle: true,
             actions: [
               IconButton(
-              icon: const Icon(Icons.settings),
-              onPressed: () {
-                context.go('/settings');
-              },
-            ),
+                icon: const Icon(Icons.bug_report),
+                onPressed: () {
+                  ProfileNavigator.toDebug(context);
+                },
+                tooltip: 'Debug Services',
+              ),
+              IconButton(
+                icon: const Icon(Icons.settings),
+                onPressed: () {
+                  context.go('/settings');
+                },
+              ),
             ],
           ),
           body: _buildBody(context, state),

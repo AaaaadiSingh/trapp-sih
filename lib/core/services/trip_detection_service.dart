@@ -7,6 +7,7 @@ import 'package:dartz/dartz.dart';
 
 import '../error/failures.dart';
 import 'location_service.dart';
+import 'notification_service.dart';
 
 enum TripState {
   idle,
@@ -96,14 +97,16 @@ class DetectedTrip {
 @singleton
 class TripDetectionService {
   final LocationService _locationService;
+  final NotificationService _notificationService;
   final Logger _logger = Logger();
 
   // Configuration
   static const double _movementThreshold = 10.0; // meters
-  static const double _speedThreshold = 1.0; // m/s (3.6 km/h)
-  static const Duration _stopDuration = Duration(minutes: 3);
+  static const double _speedThreshold = 0.1; // m/s (0.36 km/h) - Lower for testing
+  static const Duration _stopDuration = Duration(minutes: 10); // 10 minutes as required
   static const Duration _movementDuration = Duration(seconds: 30);
   static const int _maxRoutePoints = 1000;
+  static const Duration _batteryOptimizationDelay = Duration(minutes: 30); // Reduce frequency after 30 min idle
 
   // State
   TripState _currentState = TripState.idle;
@@ -111,8 +114,11 @@ class TripDetectionService {
   Position? _lastSignificantPosition;
   DateTime? _lastMovementTime;
   DateTime? _lastStopTime;
+  DateTime? _lastActivityTime;
   List<Position> _recentPositions = [];
   StreamSubscription<Position>? _locationSubscription;
+  int _tripCounter = 0; // Track total trips completed
+  bool _batteryOptimizationActive = false;
 
   // Stream controllers
   final StreamController<TripEvent> _tripEventController = StreamController<TripEvent>.broadcast();
@@ -124,8 +130,9 @@ class TripDetectionService {
   TripState get currentState => _currentState;
   DetectedTrip? get currentTrip => _currentTrip;
   bool get isDetecting => _locationSubscription != null;
+  int get totalTrips => _tripCounter;
 
-  TripDetectionService(this._locationService);
+  TripDetectionService(this._locationService, this._notificationService);
 
   /// Start trip detection
   Future<Either<Failure, void>> startTripDetection() async {
@@ -150,7 +157,14 @@ class TripDetectionService {
         _processLocationUpdate,
         onError: (error) {
           _logger.e('Trip detection error: $error');
-          _tripEventController.addError(error);
+          
+          // Handle timeout gracefully - don't crash trip detection
+          if (error.toString().contains('TimeoutException')) {
+            _logger.w('GPS timeout in trip detection - continuing with current state');
+            // Don't add error to controller for timeouts, just log it
+          } else {
+            _tripEventController.addError(error);
+          }
         },
       );
 
@@ -195,13 +209,29 @@ class TripDetectionService {
       final now = DateTime.now();
       final isMoving = _isSignificantMovement(position);
       final speed = position.speed;
+      
+      // Battery optimization: Check if we should reduce tracking frequency
+      if (isMoving || speed > _speedThreshold) {
+        _lastActivityTime = now;
+        _batteryOptimizationActive = false;
+      } else if (_lastActivityTime != null && 
+                 now.difference(_lastActivityTime!) > _batteryOptimizationDelay) {
+        _batteryOptimizationActive = true;
+        _logger.d('Battery optimization activated - reducing location update frequency');
+      }
 
       _logger.d('Processing location: lat=${position.latitude}, lng=${position.longitude}, speed=${speed}m/s, moving=$isMoving');
+      print('🔍 TripDetection - State: $_currentState, Speed: ${speed}m/s, Moving: $isMoving, Threshold: $_speedThreshold');
+      print('📊 GPS Data: accuracy=${position.accuracy}m, altitude=${position.altitude}m, heading=${position.heading}°, timestamp=${position.timestamp}');
 
       switch (_currentState) {
         case TripState.idle:
+          print('🔍 IDLE State - Checking conditions: isMoving=$isMoving, speed=$speed > $_speedThreshold = ${speed > _speedThreshold}');
           if (isMoving && speed > _speedThreshold) {
+            print('🚀 Starting trip! Conditions met.');
             _startTrip(position, now);
+          } else {
+            print('❌ Trip not started - conditions not met');
           }
           break;
 
@@ -297,6 +327,8 @@ class TripDetectionService {
     if (_currentTrip == null) return;
     
     final route = List<Position>.from(_currentTrip!.route);
+    
+    // Always add position to route for accurate distance calculation
     route.add(position);
     
     // Limit route points to prevent memory issues
@@ -304,16 +336,20 @@ class TripDetectionService {
       route.removeAt(0);
     }
     
-    // Calculate total distance
-    double totalDistance = 0.0;
-    for (int i = 1; i < route.length; i++) {
-      totalDistance += Geolocator.distanceBetween(
-        route[i - 1].latitude,
-        route[i - 1].longitude,
-        route[i].latitude,
-        route[i].longitude,
+    // Calculate incremental distance from last position
+    double newDistance = 0.0;
+    if (route.length >= 2) {
+      final lastPos = route[route.length - 2];
+      newDistance = Geolocator.distanceBetween(
+        lastPos.latitude,
+        lastPos.longitude,
+        position.latitude,
+        position.longitude,
       );
     }
+    
+    // Add to total distance (more efficient than recalculating entire route)
+    final totalDistance = _currentTrip!.totalDistance + newDistance;
     
     // Calculate duration and speeds
     final duration = timestamp.difference(_currentTrip!.startTime);
@@ -329,6 +365,11 @@ class TripDetectionService {
       state: _currentState,
     );
     
+    // Log distance updates for debugging
+    if (newDistance > 0) {
+      _logger.d('Distance updated: +${newDistance.toStringAsFixed(2)}m, Total: ${totalDistance.toStringAsFixed(2)}m');
+    }
+    
     // Emit significant location change event
     if (_isSignificantMovement(position)) {
       _tripEventController.add(TripEvent(
@@ -340,29 +381,35 @@ class TripDetectionService {
           'distance': totalDistance,
           'duration': duration.inSeconds,
           'speed': position.speed,
+          'incrementalDistance': newDistance,
         },
       ));
     }
     
+    // Always emit trip updates to keep UI in sync
     _tripController.add(_currentTrip!);
   }
 
-  /// End current trip
+  /// End the current trip
   Future<void> _endCurrentTrip() async {
     if (_currentTrip == null) return;
     
     final endTime = DateTime.now();
-    final endPosition = _currentTrip!.route.isNotEmpty ? _currentTrip!.route.last : _currentTrip!.startPosition;
+    final endPosition = _lastSignificantPosition!;
     
+    // Increment trip counter BEFORE emitting events
+    _tripCounter++;
+    
+    // Update trip with final data
     _currentTrip = _currentTrip!.copyWith(
       endTime: endTime,
       endPosition: endPosition,
       state: TripState.idle,
     );
     
-    _logger.i('Trip ended: ${_currentTrip!.id}, distance: ${_currentTrip!.totalDistance.toStringAsFixed(2)}m, duration: ${_currentTrip!.duration.inMinutes}min');
+    _logger.i('Trip $_tripCounter completed: ${_currentTrip!.id}, distance: ${_currentTrip!.totalDistance.toStringAsFixed(2)}m, duration: ${_currentTrip!.duration.inMinutes}min');
     
-    // Emit trip ended event
+    // Emit trip ended event with trip number
     _tripEventController.add(TripEvent(
       id: _currentTrip!.id,
       timestamp: endTime,
@@ -373,10 +420,23 @@ class TripDetectionService {
         'duration': _currentTrip!.duration.inSeconds,
         'averageSpeed': _currentTrip!.averageSpeed,
         'maxSpeed': _currentTrip!.maxSpeed,
+        'tripNumber': _tripCounter,
+        'tripLabel': 'Trip $_tripCounter',
       },
     ));
     
     _tripController.add(_currentTrip!);
+    
+    // Show trip completion notification
+    _notificationService.showTripCompletionNotification(
+      tripNumber: _tripCounter,
+      tripLabel: 'Trip $_tripCounter',
+    ).then((result) {
+      result.fold(
+        (failure) => _logger.e('Failed to show notification: ${failure.message}'),
+        (_) => _logger.i('Trip completion notification sent successfully'),
+      );
+    });
     
     // Reset state
     _currentTrip = null;
