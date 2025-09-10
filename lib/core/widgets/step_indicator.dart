@@ -98,11 +98,11 @@ class StepIndicator extends StatelessWidget {
 
   Color _getStepColor(int index) {
     if (index < currentStep) {
-      return AppColors.primary; // Completed
+      return AppColors.primary; // Completed - unfilled
     } else if (index == currentStep) {
-      return AppColors.primary; // Current
+      return Colors.transparent; // Current - blue filled
     } else {
-      return AppColors.surface; // Upcoming
+      return Colors.transparent; // Upcoming - unfilled
     }
   }
 
@@ -110,7 +110,7 @@ class StepIndicator extends StatelessWidget {
     if (index <= currentStep) {
       return AppColors.primary;
     } else {
-      return AppColors.outlineVariant;
+      return AppColors.primary;
     }
   }
 
@@ -142,25 +142,17 @@ class StepIndicator extends StatelessWidget {
   }
 
   Widget _getStepContent(int index) {
-    // Only show checkmark for step 1 (index 0) when user has moved to step 2 or beyond
-    if (index == 0 && currentStep > 1) {
-      // Step 1 completed - show checkmark
-      return Icon(
-        Icons.check,
-        size: 16.sp,
-        color: AppColors.onPrimary,
-      );
-    } else {
-      // Current or upcoming step - show step number
-      return Text(
-        '${index + 1}',
-        style: AppTextStyles.labelSmall.copyWith(
-          color: index == currentStep
-              ? AppColors.onPrimary
-              : AppColors.onSurfaceVariant,
-          fontWeight: FontWeight.w600,
-        ),
-      );
-    }
+    // Show step number for all steps - checkmarks will be handled by form validation
+    return Text(
+      '${index + 1}',
+      style: AppTextStyles.labelSmall.copyWith(
+        color: index == currentStep
+            ? AppColors.disabled // White text on blue background for active step
+            : (index < currentStep 
+                ? AppColors.background // Blue text for visited steps
+                : AppColors.onSurfaceVariant), // Gray text for upcoming steps
+        fontWeight: FontWeight.w600,
+      ),
+    );
   }
 }

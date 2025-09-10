@@ -124,6 +124,7 @@ class _LocationConsentFormState extends State<LocationConsentForm> {
                   'Location Services',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
+                    color: AppColors.info
                   ),
                 ),
               ],
@@ -142,9 +143,10 @@ class _LocationConsentFormState extends State<LocationConsentForm> {
                 });
                 _checkAndRequestPermissions();
               },
-              title: const Text('Enable Location Tracking'),
+              title: const Text('Enable Location Tracking', style: TextStyle(color: Colors.black)),
               subtitle: const Text(
                 'Allow the app to access your location for trip tracking and personalized features.',
+                style: TextStyle(color: Colors.black),
               ),
               controlAffinity: ListTileControlAffinity.leading,
             ),
@@ -160,9 +162,10 @@ class _LocationConsentFormState extends State<LocationConsentForm> {
                   });
                   _checkAndRequestPermissions();
                 },
-                title: const Text('Background Location Access'),
+                title: const Text('Background Location Access', style: TextStyle(color: Colors.black)),
                 subtitle: const Text(
                   'Allow location tracking when the app is in the background for automatic trip detection.',
+                  style: TextStyle(color: Colors.black),
                 ),
                 controlAffinity: ListTileControlAffinity.leading,
               ),

@@ -49,17 +49,20 @@ class TripTrackingCard extends StatelessWidget {
         Icon(
           Icons.route,
           color: Theme.of(context).primaryColor,
-          size: 24.sp,
+          size: 22.sp,
         ),
         SizedBox(width: 8.w),
-        Text(
-          'Trip Tracking',
-          style: TextStyle(
-            fontSize: 18.sp,
-            fontWeight: FontWeight.bold,
+        Expanded(
+          child: Text(
+            'Trip Tracking',
+            style: TextStyle(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.bold,
+            ),
+            overflow: TextOverflow.ellipsis,
           ),
         ),
-        const Spacer(),
+        SizedBox(width: 8.w),
         Switch(
           value: state.isTripDetectionActive,
           onChanged: (value) {

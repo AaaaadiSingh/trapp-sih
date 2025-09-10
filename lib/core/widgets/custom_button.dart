@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
+import '../theme/gradient_utils.dart';
 
 enum ButtonVariant { primary, secondary, outline, outlined, text, filled }
 
@@ -37,103 +38,173 @@ class CustomButton extends StatelessWidget {
 
     switch (variant) {
       case ButtonVariant.primary:
-        button = ElevatedButton(
-          onPressed: isLoading ? null : onPressed,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primary,
-            foregroundColor: AppColors.onPrimary,
-            padding:
-                padding ??
-                EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
-            minimumSize: Size(
-              width ?? (isFullWidth ? double.infinity : 0),
-              height ?? 48.h,
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.r),
+        button = Container(
+          width: width ?? (isFullWidth ? double.infinity : null),
+          height: height ?? 52.h,
+          decoration: BoxDecoration(
+            gradient: isLoading ? null : GradientUtils.primary,
+            color: isLoading ? AppColors.disabled : null,
+            borderRadius: BorderRadius.circular(16.r),
+            boxShadow:
+                isLoading
+                    ? null
+                    : [
+                      BoxShadow(
+                        color: AppColors.primary.withOpacity(0.3),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: isLoading ? null : onPressed,
+              borderRadius: BorderRadius.circular(16.r),
+              child: Container(
+                padding:
+                    padding ??
+                    EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+                child: Center(child: _buildButtonContent(AppColors.onPrimary)),
+              ),
             ),
           ),
-          child: _buildButtonContent(),
         );
         break;
       case ButtonVariant.secondary:
-        button = ElevatedButton(
-          onPressed: isLoading ? null : onPressed,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.secondary,
-            foregroundColor: AppColors.onSecondary,
-            padding:
-                padding ??
-                EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
-            minimumSize: Size(
-              width ?? (isFullWidth ? double.infinity : 0),
-              height ?? 48.h,
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.r),
+        button = Container(
+          width: width ?? (isFullWidth ? double.infinity : null),
+          height: height ?? 52.h,
+          decoration: BoxDecoration(
+            gradient: isLoading ? null : GradientUtils.secondary,
+            color: isLoading ? AppColors.disabled : null,
+            borderRadius: BorderRadius.circular(16.r),
+            boxShadow:
+                isLoading
+                    ? null
+                    : [
+                      BoxShadow(
+                        color: AppColors.secondary.withOpacity(0.3),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: isLoading ? null : onPressed,
+              borderRadius: BorderRadius.circular(16.r),
+              child: Container(
+                padding:
+                    padding ??
+                    EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+                child: Center(
+                  child: _buildButtonContent(AppColors.onSecondary),
+                ),
+              ),
             ),
           ),
-          child: _buildButtonContent(),
         );
         break;
       case ButtonVariant.outline:
       case ButtonVariant.outlined:
-        button = OutlinedButton(
-          onPressed: isLoading ? null : onPressed,
-          style: OutlinedButton.styleFrom(
-            foregroundColor: AppColors.primary,
-            side: const BorderSide(color: AppColors.primary),
-            padding:
-                padding ??
-                EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
-            minimumSize: Size(
-              width ?? (isFullWidth ? double.infinity : 0),
-              height ?? 48.h,
+        button = Container(
+          width: width ?? (isFullWidth ? double.infinity : null),
+          height: height ?? 52.h,
+          decoration: BoxDecoration(
+            gradient: isLoading ? null : GradientUtils.surface,
+            color: isLoading ? AppColors.disabled.withOpacity(0.1) : null,
+            borderRadius: BorderRadius.circular(16.r),
+            border: Border.all(
+              width: 2,
+              color: isLoading ? AppColors.disabled : AppColors.primary,
             ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.r),
+            boxShadow:
+                isLoading
+                    ? null
+                    : [
+                      BoxShadow(
+                        color: AppColors.primary.withOpacity(0.1),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: isLoading ? null : onPressed,
+              borderRadius: BorderRadius.circular(16.r),
+              child: Container(
+                padding:
+                    padding ??
+                    EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+                child: Center(
+                  child: _buildButtonContent(
+                    isLoading ? AppColors.disabled : AppColors.primary,
+                  ),
+                ),
+              ),
             ),
           ),
-          child: _buildButtonContent(),
         );
         break;
       case ButtonVariant.filled:
-        button = ElevatedButton(
-          onPressed: isLoading ? null : onPressed,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primary,
-            foregroundColor: AppColors.onPrimary,
-            padding:
-                padding ??
-                EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
-            minimumSize: Size(
-              width ?? (isFullWidth ? double.infinity : 0),
-              height ?? 48.h,
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.r),
+        button = Container(
+          width: width ?? (isFullWidth ? double.infinity : null),
+          height: height ?? 52.h,
+          decoration: BoxDecoration(
+            gradient: isLoading ? null : GradientUtils.accent,
+            color: isLoading ? AppColors.disabled : null,
+            borderRadius: BorderRadius.circular(16.r),
+            boxShadow:
+                isLoading
+                    ? null
+                    : [
+                      BoxShadow(
+                        color: AppColors.accent.withOpacity(0.3),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: isLoading ? null : onPressed,
+              borderRadius: BorderRadius.circular(16.r),
+              child: Container(
+                padding:
+                    padding ??
+                    EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+                child: Center(child: _buildButtonContent(AppColors.onAccent)),
+              ),
             ),
           ),
-          child: _buildButtonContent(),
         );
         break;
       case ButtonVariant.text:
-        button = TextButton(
-          onPressed: isLoading ? null : onPressed,
-          style: TextButton.styleFrom(
-            foregroundColor: AppColors.primary,
-            padding:
-                padding ??
-                EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
-            minimumSize: Size(
-              width ?? (isFullWidth ? double.infinity : 0),
-              height ?? 48.h,
-            ),
-            shape: RoundedRectangleBorder(
+        button = Container(
+          width: width ?? (isFullWidth ? double.infinity : null),
+          height: height ?? 48.h,
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: isLoading ? null : onPressed,
               borderRadius: BorderRadius.circular(12.r),
+              child: Container(
+                padding:
+                    padding ??
+                    EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+                child: Center(
+                  child: _buildButtonContent(
+                    isLoading ? AppColors.disabled : AppColors.primary,
+                  ),
+                ),
+              ),
             ),
           ),
-          child: _buildButtonContent(),
         );
         break;
     }
@@ -141,14 +212,14 @@ class CustomButton extends StatelessWidget {
     return button;
   }
 
-  Widget _buildButtonContent() {
+  Widget _buildButtonContent(Color textColor) {
     if (isLoading) {
       return SizedBox(
         height: 20.h,
         width: 20.w,
-        child: const CircularProgressIndicator(
-          strokeWidth: 2,
-          valueColor: AlwaysStoppedAnimation<Color>(AppColors.onPrimary),
+        child: CircularProgressIndicator(
+          strokeWidth: 2.5,
+          valueColor: AlwaysStoppedAnimation<Color>(textColor),
         ),
       );
     }
@@ -159,11 +230,25 @@ class CustomButton extends StatelessWidget {
         children: [
           icon!,
           SizedBox(width: 8.w),
-          Text(text, style: AppTextStyles.buttonMedium),
+          Text(
+            text,
+            style: AppTextStyles.buttonMedium.copyWith(
+              color: textColor,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.5,
+            ),
+          ),
         ],
       );
     }
 
-    return Text(text, style: AppTextStyles.buttonMedium);
+    return Text(
+      text,
+      style: AppTextStyles.buttonMedium.copyWith(
+        color: textColor,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 0.5,
+      ),
+    );
   }
 }

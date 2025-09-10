@@ -69,7 +69,7 @@ class CustomCheckboxField extends StatelessWidget {
                               color:
                                   hasError
                                       ? AppColors.error
-                                      : AppColors.onSurface,
+                                      : AppColors.primary,
                               fontWeight: FontWeight.w500,
                             ),
                             children: [

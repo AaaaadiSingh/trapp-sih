@@ -159,10 +159,14 @@ class LocationDemographicsForm extends StatelessWidget {
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
-                                      Text(
-                                        _getPrivacyLevelDescription(level),
-                                        style: AppTextStyles.bodySmall.copyWith(
-                                          color: AppColors.textSecondary,
+                                      Flexible(
+                                        child: Text(
+                                          _getPrivacyLevelDescription(level),
+                                          style: AppTextStyles.bodySmall.copyWith(
+                                            color: AppColors.textSecondary,
+                                          ),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
                                     ],

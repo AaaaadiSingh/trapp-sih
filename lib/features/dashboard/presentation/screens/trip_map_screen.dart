@@ -9,12 +9,8 @@ import '../../../../core/services/trip_detection_service.dart';
 class TripMapScreen extends StatefulWidget {
   final DetectedTrip? trip;
   final Position? currentLocation;
-  
-  const TripMapScreen({
-    super.key,
-    this.trip,
-    this.currentLocation,
-  });
+
+  const TripMapScreen({super.key, this.trip, this.currentLocation});
 
   @override
   State<TripMapScreen> createState() => _TripMapScreenState();
@@ -23,7 +19,7 @@ class TripMapScreen extends StatefulWidget {
 class _TripMapScreenState extends State<TripMapScreen> {
   final MapController _mapController = MapController();
   bool _isFollowingUser = true;
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,37 +48,30 @@ class _TripMapScreenState extends State<TripMapScreen> {
       body: Builder(
         builder: (context) {
           final currentTrip = widget.trip;
-          
+
           if (currentTrip == null) {
             return const Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.location_off,
-                    size: 64,
-                    color: Colors.grey,
-                  ),
+                  Icon(Icons.location_off, size: 64, color: Colors.grey),
                   SizedBox(height: 16),
                   Text(
                     'No active trip',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.grey,
-                    ),
+                    style: TextStyle(fontSize: 18, color: Colors.grey),
                   ),
                 ],
               ),
             );
           }
-          
+
           // Auto-center on current location if following
           if (_isFollowingUser && currentTrip.route.isNotEmpty) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               _centerOnCurrentLocation();
             });
           }
-          
+
           return Stack(
             children: [
               FlutterMap(
@@ -104,19 +93,24 @@ class _TripMapScreenState extends State<TripMapScreen> {
                 children: [
                   // OpenStreetMap tiles (free)
                   TileLayer(
-                    urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    urlTemplate:
+                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                     userAgentPackageName: 'com.example.sih',
                     maxZoom: 18,
                   ),
-                  
+
                   // Route polyline
                   if (currentTrip.route.length > 1)
                     PolylineLayer(
                       polylines: [
                         Polyline(
-                          points: currentTrip.route
-                              .map((pos) => LatLng(pos.latitude, pos.longitude))
-                              .toList(),
+                          points:
+                              currentTrip.route
+                                  .map(
+                                    (pos) =>
+                                        LatLng(pos.latitude, pos.longitude),
+                                  )
+                                  .toList(),
                           strokeWidth: 4.0,
                           color: _getRouteColor(currentTrip.state),
                           borderStrokeWidth: 2.0,
@@ -124,14 +118,12 @@ class _TripMapScreenState extends State<TripMapScreen> {
                         ),
                       ],
                     ),
-                  
+
                   // Markers
-                  MarkerLayer(
-                    markers: _buildMarkers(currentTrip),
-                  ),
+                  MarkerLayer(markers: _buildMarkers(currentTrip)),
                 ],
               ),
-              
+
               // Trip info overlay
               Positioned(
                 top: 16.h,
@@ -145,7 +137,7 @@ class _TripMapScreenState extends State<TripMapScreen> {
       ),
     );
   }
-  
+
   LatLng _getInitialCenter(DetectedTrip trip) {
     if (trip.route.isNotEmpty) {
       final lastPosition = trip.route.last;
@@ -153,7 +145,7 @@ class _TripMapScreenState extends State<TripMapScreen> {
     }
     return LatLng(trip.startPosition.latitude, trip.startPosition.longitude);
   }
-  
+
   Color _getRouteColor(TripState state) {
     switch (state) {
       case TripState.moving:
@@ -164,14 +156,17 @@ class _TripMapScreenState extends State<TripMapScreen> {
         return Colors.grey;
     }
   }
-  
+
   List<Marker> _buildMarkers(DetectedTrip trip) {
     final markers = <Marker>[];
-    
+
     // Start marker
     markers.add(
       Marker(
-        point: LatLng(trip.startPosition.latitude, trip.startPosition.longitude),
+        point: LatLng(
+          trip.startPosition.latitude,
+          trip.startPosition.longitude,
+        ),
         width: 40.w,
         height: 40.h,
         child: Container(
@@ -179,15 +174,11 @@ class _TripMapScreenState extends State<TripMapScreen> {
             color: Colors.green,
             shape: BoxShape.circle,
           ),
-          child: const Icon(
-            Icons.play_arrow,
-            color: Colors.white,
-            size: 20,
-          ),
+          child: const Icon(Icons.play_arrow, color: Colors.white, size: 20),
         ),
       ),
     );
-    
+
     // Current position marker (if trip is active)
     if (trip.route.isNotEmpty && trip.state != TripState.idle) {
       final currentPos = trip.route.last;
@@ -198,7 +189,8 @@ class _TripMapScreenState extends State<TripMapScreen> {
           height: 40.h,
           child: Container(
             decoration: BoxDecoration(
-              color: trip.state == TripState.moving ? Colors.blue : Colors.orange,
+              color:
+                  trip.state == TripState.moving ? Colors.blue : Colors.orange,
               shape: BoxShape.circle,
               border: Border.all(color: Colors.white, width: 2),
             ),
@@ -211,12 +203,15 @@ class _TripMapScreenState extends State<TripMapScreen> {
         ),
       );
     }
-    
+
     // End marker (if trip is completed)
     if (trip.endPosition != null) {
       markers.add(
         Marker(
-          point: LatLng(trip.endPosition!.latitude, trip.endPosition!.longitude),
+          point: LatLng(
+            trip.endPosition!.latitude,
+            trip.endPosition!.longitude,
+          ),
           width: 40.w,
           height: 40.h,
           child: Container(
@@ -224,19 +219,15 @@ class _TripMapScreenState extends State<TripMapScreen> {
               color: Colors.red,
               shape: BoxShape.circle,
             ),
-            child: const Icon(
-              Icons.stop,
-              color: Colors.white,
-              size: 20,
-            ),
+            child: const Icon(Icons.stop, color: Colors.white, size: 20),
           ),
         ),
       );
     }
-    
+
     return markers;
   }
-  
+
   Widget _buildTripInfoCard(DetectedTrip trip) {
     return Card(
       elevation: 4,
@@ -303,34 +294,21 @@ class _TripMapScreenState extends State<TripMapScreen> {
       ),
     );
   }
-  
+
   Widget _buildInfoItem(String label, String value, IconData icon) {
     return Column(
       children: [
-        Icon(
-          icon,
-          size: 16.sp,
-          color: Colors.grey[600],
-        ),
+        Icon(icon, size: 16.sp, color: Colors.grey[600]),
         SizedBox(height: 4.h),
         Text(
           value,
-          style: TextStyle(
-            fontSize: 12.sp,
-            fontWeight: FontWeight.w600,
-          ),
+          style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600),
         ),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 10.sp,
-            color: Colors.grey[600],
-          ),
-        ),
+        Text(label, style: TextStyle(fontSize: 10.sp, color: Colors.grey[600])),
       ],
     );
   }
-  
+
   String _getTripStateText(TripState state) {
     switch (state) {
       case TripState.moving:
@@ -341,12 +319,12 @@ class _TripMapScreenState extends State<TripMapScreen> {
         return 'Completed';
     }
   }
-  
+
   String _formatDuration(Duration duration) {
     final hours = duration.inHours;
     final minutes = duration.inMinutes.remainder(60);
     final seconds = duration.inSeconds.remainder(60);
-    
+
     if (hours > 0) {
       return '${hours}h ${minutes}m';
     } else if (minutes > 0) {
@@ -355,10 +333,10 @@ class _TripMapScreenState extends State<TripMapScreen> {
       return '${seconds}s';
     }
   }
-  
+
   void _centerOnCurrentLocation() {
     final currentTrip = widget.trip;
-    
+
     if (currentTrip != null && currentTrip.route.isNotEmpty) {
       final lastPosition = currentTrip.route.last;
       _mapController.move(
@@ -367,7 +345,10 @@ class _TripMapScreenState extends State<TripMapScreen> {
       );
     } else if (widget.currentLocation != null) {
       _mapController.move(
-        LatLng(widget.currentLocation!.latitude, widget.currentLocation!.longitude),
+        LatLng(
+          widget.currentLocation!.latitude,
+          widget.currentLocation!.longitude,
+        ),
         16.0,
       );
     }

@@ -37,8 +37,8 @@ class CurrentTripsTab extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () {
                     context.read<DashboardBloc>().add(
-                          const DashboardEvent.loadDashboardData(),
-                        );
+                      const DashboardEvent.loadDashboardData(),
+                    );
                   },
                   child: const Text('Retry'),
                 ),
@@ -89,8 +89,8 @@ class CurrentTripsTab extends StatelessWidget {
             onPressed: () {
               // Navigate to Plan Trips tab
               context.read<DashboardBloc>().add(
-                    const DashboardEvent.tabChanged(3),
-                  );
+                const DashboardEvent.tabChanged(3),
+              );
             },
             icon: const Icon(Icons.add),
             label: const Text('Plan a Trip'),
@@ -102,7 +102,7 @@ class CurrentTripsTab extends StatelessWidget {
 
   Widget _buildMobileLayout(BuildContext context, DashboardState state) {
     final trips = state.dashboardData!.currentTrips;
-    
+
     return SingleChildScrollView(
       padding: EdgeInsets.all(16.w),
       child: Column(
@@ -118,7 +118,7 @@ class CurrentTripsTab extends StatelessWidget {
 
   Widget _buildTabletLayout(BuildContext context, DashboardState state) {
     final trips = state.dashboardData!.currentTrips;
-    
+
     return SingleChildScrollView(
       padding: EdgeInsets.all(24.w),
       child: Column(
@@ -162,7 +162,11 @@ class CurrentTripsTab extends StatelessWidget {
     );
   }
 
-  Widget _buildFilterChip(BuildContext context, String label, {bool isSelected = false}) {
+  Widget _buildFilterChip(
+    BuildContext context,
+    String label, {
+    bool isSelected = false,
+  }) {
     return FilterChip(
       selected: isSelected,
       showCheckmark: false,
@@ -170,7 +174,10 @@ class CurrentTripsTab extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
         side: BorderSide(
-          color: isSelected ? AppColors.primary : AppColors.textSecondary.withOpacity(0.3),
+          color:
+              isSelected
+                  ? AppColors.primary
+                  : AppColors.textSecondary.withOpacity(0.3),
         ),
       ),
       selectedColor: AppColors.primary.withOpacity(0.1),
@@ -193,7 +200,9 @@ class CurrentTripsTab extends StatelessWidget {
         return Card(
           elevation: 2,
           margin: EdgeInsets.only(bottom: 12.h),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
           child: Padding(
             padding: EdgeInsets.all(16.w),
             child: Column(
@@ -202,149 +211,158 @@ class CurrentTripsTab extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                _buildTripStatusChip(context, trip.status),
-                Text(
-                  '${_formatTime(trip.startTime)} - ${_formatTime(trip.endTime)}',
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 16.h),
-            Row(
-              children: [
-                const Icon(
-                  Icons.location_on,
-                  color: AppColors.primary,
-                  size: 20,
-                ),
-                SizedBox(width: 8.w),
-                Expanded(
-                  child: Text(
-                    trip.origin,
-                    style: AppTextStyles.bodyLarge.copyWith(
-                      fontWeight: FontWeight.w500,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 4.h),
-            Padding(
-              padding: EdgeInsets.only(left: 10.w),
-              child: Container(
-                width: 1,
-                height: 20.h,
-                color: AppColors.textSecondary.withOpacity(0.3),
-              ),
-            ),
-            SizedBox(height: 4.h),
-            Row(
-              children: [
-                const Icon(
-                  Icons.flag,
-                  color: AppColors.secondary,
-                  size: 20,
-                ),
-                SizedBox(width: 8.w),
-                Expanded(
-                  child: Text(
-                    trip.destination,
-                    style: AppTextStyles.bodyLarge.copyWith(
-                      fontWeight: FontWeight.w500,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 16.h),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.directions_car,
-                      size: 16,
-                      color: AppColors.textSecondary,
-                    ),
-                    SizedBox(width: 4.w),
+                    _buildTripStatusChip(context, trip.status),
                     Text(
-                      '${trip.distance.toInt()} km',
-                      style: AppTextStyles.bodySmall.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                    SizedBox(width: 16.w),
-                    const Icon(
-                      Icons.access_time,
-                      size: 16,
-                      color: AppColors.textSecondary,
-                    ),
-                    SizedBox(width: 4.w),
-                    Text(
-                      '${trip.duration} mins',
-                      style: AppTextStyles.bodySmall.copyWith(
+                      '${_formatTime(trip.startTime)} - ${_formatTime(trip.endTime)}',
+                      style: AppTextStyles.bodyMedium.copyWith(
                         color: AppColors.textSecondary,
                       ),
                     ),
                   ],
                 ),
-                if (trip.status == TripStatus.inProgress)
-                  OutlinedButton(
-                    onPressed: () {
-                      // Check if there's a live detected trip
-                      if (state.currentTrip != null) {
-                        // Use live trip data
-                        ProfileNavigator.toTripMap(
-                          context,
-                          trip: state.currentTrip,
-                          currentLocation: state.currentLocation,
-                        );
-                      } else {
-                        // Create a mock DetectedTrip from TripData for map display
-                        final mockTrip = DetectedTrip(
-                          id: trip.id,
-                          startTime: trip.startTime,
-                          startPosition: state.currentLocation ?? Position(
-                            latitude: 0.0,
-                            longitude: 0.0,
-                            timestamp: DateTime.now(),
-                            accuracy: 0.0,
-                            altitude: 0.0,
-                            altitudeAccuracy: 0.0,
-                            heading: 0.0,
-                            headingAccuracy: 0.0,
-                            speed: 0.0,
-                            speedAccuracy: 0.0,
-                          ),
-                          route: state.currentLocation != null ? [state.currentLocation!] : [],
-                          totalDistance: trip.distance * 1000, // Convert km to meters
-                          duration: Duration(minutes: trip.duration),
-                          averageSpeed: 0.0,
-                          maxSpeed: 0.0,
-                          state: TripState.moving,
-                        );
-                        
-                        ProfileNavigator.toTripMap(
-                          context,
-                          trip: mockTrip,
-                          currentLocation: state.currentLocation,
-                        );
-                      }
-                    },
-                    style: OutlinedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
-                      minimumSize: Size.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                SizedBox(height: 16.h),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.location_on,
+                      color: AppColors.primary,
+                      size: 20,
                     ),
-                    child: const Text('View'),
+                    SizedBox(width: 8.w),
+                    Expanded(
+                      child: Text(
+                        trip.origin,
+                        style: AppTextStyles.bodyLarge.copyWith(
+                          fontWeight: FontWeight.w500,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 4.h),
+                Padding(
+                  padding: EdgeInsets.only(left: 10.w),
+                  child: Container(
+                    width: 1,
+                    height: 20.h,
+                    color: AppColors.textSecondary.withOpacity(0.3),
                   ),
-              ],
-            ),
+                ),
+                SizedBox(height: 4.h),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.flag,
+                      color: AppColors.secondary,
+                      size: 20,
+                    ),
+                    SizedBox(width: 8.w),
+                    Expanded(
+                      child: Text(
+                        trip.destination,
+                        style: AppTextStyles.bodyLarge.copyWith(
+                          fontWeight: FontWeight.w500,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16.h),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.directions_car,
+                          size: 16,
+                          color: AppColors.textSecondary,
+                        ),
+                        SizedBox(width: 4.w),
+                        Text(
+                          '${trip.distance.toInt()} km',
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                        SizedBox(width: 16.w),
+                        const Icon(
+                          Icons.access_time,
+                          size: 16,
+                          color: AppColors.textSecondary,
+                        ),
+                        SizedBox(width: 4.w),
+                        Text(
+                          '${trip.duration} mins',
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (trip.status == TripStatus.inProgress)
+                      OutlinedButton(
+                        onPressed: () {
+                          // Check if there's a live detected trip
+                          if (state.currentTrip != null) {
+                            // Use live trip data
+                            ProfileNavigator.toTripMap(
+                              context,
+                              trip: state.currentTrip,
+                              currentLocation: state.currentLocation,
+                            );
+                          } else {
+                            // Create a mock DetectedTrip from TripData for map display
+                            final mockTrip = DetectedTrip(
+                              id: trip.id,
+                              startTime: trip.startTime,
+                              startPosition:
+                                  state.currentLocation ??
+                                  Position(
+                                    latitude: 0.0,
+                                    longitude: 0.0,
+                                    timestamp: DateTime.now(),
+                                    accuracy: 0.0,
+                                    altitude: 0.0,
+                                    altitudeAccuracy: 0.0,
+                                    heading: 0.0,
+                                    headingAccuracy: 0.0,
+                                    speed: 0.0,
+                                    speedAccuracy: 0.0,
+                                  ),
+                              route:
+                                  state.currentLocation != null
+                                      ? [state.currentLocation!]
+                                      : [],
+                              totalDistance:
+                                  trip.distance * 1000, // Convert km to meters
+                              duration: Duration(minutes: trip.duration),
+                              averageSpeed: 0.0,
+                              maxSpeed: 0.0,
+                              state: TripState.moving,
+                            );
+
+                            ProfileNavigator.toTripMap(
+                              context,
+                              trip: mockTrip,
+                              currentLocation: state.currentLocation,
+                            );
+                          }
+                        },
+                        style: OutlinedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 12.w,
+                            vertical: 4.h,
+                          ),
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                        child: const Text('View'),
+                      ),
+                  ],
+                ),
               ],
             ),
           ),

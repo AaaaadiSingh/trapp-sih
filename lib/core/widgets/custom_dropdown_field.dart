@@ -40,25 +40,25 @@ class CustomDropdownField<T> extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Label
-          RichText(
-            text: TextSpan(
-              text: label,
-              style: AppTextStyles.labelLarge.copyWith(
-                color: AppColors.onSurfaceVariant,
-                fontWeight: FontWeight.w500,
-              ),
-              children: [
-                if (isRequired)
-                  TextSpan(
-                    text: ' *',
-                    style: AppTextStyles.labelLarge.copyWith(
-                      color: AppColors.error,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-              ],
+        RichText(
+          text: TextSpan(
+            text: label,
+            style: AppTextStyles.labelLarge.copyWith(
+              color: hasError ? AppColors.error : AppColors.primary,
+              fontWeight: FontWeight.w500,
             ),
+            children: [
+              if (isRequired)
+                TextSpan(
+                  text: ' *',
+                  style: AppTextStyles.labelLarge.copyWith(
+                    color: AppColors.error,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+            ],
           ),
+        ),
           SizedBox(height: 8.h),
 
           // Dropdown Field
@@ -97,9 +97,9 @@ class CustomDropdownField<T> extends StatelessWidget {
                       : null,
               style: AppTextStyles.fieldInput.copyWith(
                 color:
-                    enabled ? AppColors.onSurface : AppColors.onSurfaceVariant,
+                    enabled ? Colors.black : AppColors.onSurfaceVariant,
               ),
-              dropdownColor: AppColors.surface,
+              dropdownColor: Colors.white,
               borderRadius: BorderRadius.circular(12.r),
               icon: Icon(
                 Icons.keyboard_arrow_down_rounded,

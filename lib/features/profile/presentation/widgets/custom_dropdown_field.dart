@@ -36,7 +36,7 @@ class CustomDropdownField<T> extends StatelessWidget {
           text: TextSpan(
             text: label,
             style: theme.textTheme.labelLarge?.copyWith(
-              color: colorScheme.onSurface,
+              color: colorScheme.primary,
               fontWeight: FontWeight.w600,
             ),
             children: [
@@ -70,10 +70,10 @@ class CustomDropdownField<T> extends StatelessWidget {
           ),
           style: theme.textTheme.bodyLarge?.copyWith(
             color: enabled 
-                ? colorScheme.onSurface 
+                ? Colors.black 
                 : colorScheme.onSurface.withValues(alpha: 0.38),
           ),
-          dropdownColor: colorScheme.surface,
+          dropdownColor: Colors.white,
           borderRadius: BorderRadius.circular(12.r),
           menuMaxHeight: 300.h,
           isExpanded: true,

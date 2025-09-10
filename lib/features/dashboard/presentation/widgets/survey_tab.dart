@@ -5,6 +5,7 @@ import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/gradient_utils.dart';
 import '../../domain/entities/survey_data.dart';
 import '../bloc/survey_bloc.dart';
 
@@ -26,10 +27,7 @@ class SurveyTab extends StatelessWidget {
 
         if (state.error != null) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.error!),
-              backgroundColor: Colors.red,
-            ),
+            SnackBar(content: Text(state.error!), backgroundColor: Colors.red),
           );
         }
       },
@@ -38,7 +36,7 @@ class SurveyTab extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
 
-        if (state.surveys!.isEmpty) {
+        if (state.surveys == null || state.surveys!.isEmpty) {
           return _buildEmptyState(context);
         }
 
@@ -141,82 +139,153 @@ class SurveyTab extends StatelessWidget {
   }
 
   Widget _buildSurveyCard(BuildContext context, SurveyData survey) {
-    return Card(
-      elevation: 2,
-      margin: EdgeInsets.only(bottom: 16.h),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: InkWell(
-        onTap: () {
-          _showSurveyDialog(context, survey);
-        },
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: EdgeInsets.all(16.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Text(
-                      survey.title,
-                      style: AppTextStyles.titleMedium.copyWith(
-                        fontWeight: FontWeight.bold,
+    return Container(
+      margin: EdgeInsets.only(bottom: 20.h),
+      decoration: BoxDecoration(
+        gradient: GradientUtils.cardOverlay,
+        borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(
+          color: AppColors.outline.withOpacity(0.08),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.shadow.withOpacity(0.06),
+            blurRadius: 16,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            _showSurveyDialog(context, survey);
+          },
+          borderRadius: BorderRadius.circular(20.r),
+          child: Padding(
+            padding: EdgeInsets.all(20.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(10.w),
+                      decoration: BoxDecoration(
+                        gradient: GradientUtils.accent,
+                        borderRadius: BorderRadius.circular(14.r),
                       ),
-                      overflow: TextOverflow.ellipsis,
+                      child: Icon(
+                        Icons.assignment,
+                        color: AppColors.onPrimary,
+                        size: 20.w,
+                      ),
                     ),
-                  ),
-                  _buildSurveyStatusChip(context, survey.status),
-                ],
-              ),
-              SizedBox(height: 8.h),
-              Text(
-                survey.description,
-                style: AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.textSecondary,
-                ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-              SizedBox(height: 16.h),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.help_outline,
-                        size: 16,
-                        color: AppColors.textSecondary,
+                    SizedBox(width: 16.w),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            survey.title,
+                            style: AppTextStyles.titleMedium.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.textPrimary,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          SizedBox(height: 4.h),
+                          _buildSurveyStatusChip(context, survey.status),
+                        ],
                       ),
-                      SizedBox(width: 4.w),
-                      Text(
-                        '${survey.questions.length} questions',
-                        style: AppTextStyles.bodySmall.copyWith(
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16.h),
+                Container(
+                  padding: EdgeInsets.all(16.w),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        AppColors.surfaceContainer.withOpacity(0.3),
+                        AppColors.surfaceContainerHigh.withOpacity(0.2),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                  child: Text(
+                    survey.description,
+                    style: AppTextStyles.bodyMedium.copyWith(
+                      color: AppColors.textSecondary,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                SizedBox(height: 16.h),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.help_outline,
+                          size: 16,
                           color: AppColors.textSecondary,
                         ),
+                        SizedBox(width: 4.w),
+                        Text(
+                          '${survey.questions.length} questions',
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        gradient: GradientUtils.primary,
+                        borderRadius: BorderRadius.circular(12.r),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primary.withOpacity(0.3),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      _showSurveyDialog(context, survey);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-                      minimumSize: Size.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: () {
+                            _showSurveyDialog(context, survey);
+                          },
+                          borderRadius: BorderRadius.circular(12.r),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16.w,
+                              vertical: 8.h,
+                            ),
+                            child: const Text(
+                              'Take Survey',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                    child: Text(
-                      survey.status == SurveyStatus.completed
-                          ? 'View'
-                          : 'Take Survey',
-                    ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -294,9 +363,10 @@ class _SurveyDialogState extends State<SurveyDialog> {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Container(
-        width: ResponsiveBreakpoints.of(context).isMobile
-            ? double.infinity
-            : 500.w,
+        width:
+            ResponsiveBreakpoints.of(context).isMobile
+                ? double.infinity
+                : 500.w,
         padding: EdgeInsets.all(24.w),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -321,8 +391,8 @@ class _SurveyDialogState extends State<SurveyDialog> {
             ),
             SizedBox(height: 8.h),
             LinearProgressIndicator(
-              value: (_currentQuestionIndex + 1) /
-                  widget.survey.questions.length,
+              value:
+                  (_currentQuestionIndex + 1) / widget.survey.questions.length,
               backgroundColor: AppColors.primary.withValues(alpha: 0.1),
             ),
             SizedBox(height: 4.h),
@@ -333,10 +403,7 @@ class _SurveyDialogState extends State<SurveyDialog> {
               ),
             ),
             SizedBox(height: 16.h),
-            Text(
-              question.question,
-              style: AppTextStyles.titleMedium,
-            ),
+            Text(question.question, style: AppTextStyles.titleMedium),
             SizedBox(height: 24.h),
             _buildQuestionInput(question, isReadOnly),
             SizedBox(height: 24.h),
@@ -351,13 +418,16 @@ class _SurveyDialogState extends State<SurveyDialog> {
                 else
                   const SizedBox(),
                 ElevatedButton(
-                  onPressed: isReadOnly
-                      ? (_isLastQuestion
-                          ? () => Navigator.of(context).pop()
-                          : _nextQuestion)
-                      : (_answers.containsKey(_currentQuestionIndex)
-                          ? (_isLastQuestion ? _submitSurvey : _nextQuestion)
-                          : null),
+                  onPressed:
+                      isReadOnly
+                          ? (_isLastQuestion
+                              ? () => Navigator.of(context).pop()
+                              : _nextQuestion)
+                          : (_answers.containsKey(_currentQuestionIndex)
+                              ? (_isLastQuestion
+                                  ? _submitSurvey
+                                  : _nextQuestion)
+                              : null),
                   child: Text(_isLastQuestion ? 'Submit' : 'Next'),
                 ),
               ],
@@ -373,27 +443,29 @@ class _SurveyDialogState extends State<SurveyDialog> {
       case QuestionType.multipleChoice:
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: question.options.asMap().entries.map((entry) {
-            final index = entry.key;
-            final option = entry.value;
-            // Check if this option is selected
+          children:
+              question.options.asMap().entries.map((entry) {
+                final index = entry.key;
+                final option = entry.value;
+                // Check if this option is selected
 
-            return RadioListTile<int>(
-              title: Text(option),
-              value: index,
-              groupValue: _answers[_currentQuestionIndex],
-              onChanged: isReadOnly
-                  ? null
-                  : (value) {
-                      setState(() {
-                        _answers[_currentQuestionIndex] = value;
-                      });
-                    },
-              activeColor: AppColors.primary,
-              contentPadding: EdgeInsets.zero,
-              dense: true,
-            );
-          }).toList(),
+                return RadioListTile<int>(
+                  title: Text(option),
+                  value: index,
+                  groupValue: _answers[_currentQuestionIndex],
+                  onChanged:
+                      isReadOnly
+                          ? null
+                          : (value) {
+                            setState(() {
+                              _answers[_currentQuestionIndex] = value;
+                            });
+                          },
+                  activeColor: AppColors.primary,
+                  contentPadding: EdgeInsets.zero,
+                  dense: true,
+                );
+              }).toList(),
         );
 
       case QuestionType.rating:
@@ -404,21 +476,23 @@ class _SurveyDialogState extends State<SurveyDialog> {
             final isSelected = _answers[_currentQuestionIndex] == rating;
 
             return InkWell(
-              onTap: isReadOnly
-                  ? null
-                  : () {
-                      setState(() {
-                        _answers[_currentQuestionIndex] = rating;
-                      });
-                    },
+              onTap:
+                  isReadOnly
+                      ? null
+                      : () {
+                        setState(() {
+                          _answers[_currentQuestionIndex] = rating;
+                        });
+                      },
               borderRadius: BorderRadius.circular(8),
               child: Container(
                 width: 40.w,
                 height: 40.w,
                 decoration: BoxDecoration(
-                  color: isSelected
-                      ? AppColors.primary
-                      : AppColors.primary.withValues(alpha: 0.1),
+                  color:
+                      isSelected
+                          ? AppColors.primary
+                          : AppColors.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 alignment: Alignment.center,
@@ -438,12 +512,11 @@ class _SurveyDialogState extends State<SurveyDialog> {
         return TextField(
           enabled: !isReadOnly,
           controller: TextEditingController(
-              text: _answers[_currentQuestionIndex] ?? ''),
+            text: _answers[_currentQuestionIndex] ?? '',
+          ),
           decoration: InputDecoration(
             hintText: 'Enter your answer',
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
           ),
           maxLines: 3,
           onChanged: (value) {
@@ -472,20 +545,18 @@ class _SurveyDialogState extends State<SurveyDialog> {
     final Map<String, dynamic> formattedAnswers = {};
     _answers.forEach((questionIndex, answer) {
       final question = widget.survey.questions[questionIndex];
-      
+
       // Format the answer based on question type
       dynamic formattedAnswer = answer;
       if (question.type == QuestionType.multipleChoice && answer is int) {
         formattedAnswer = question.options[answer];
       }
-      
+
       formattedAnswers[question.id] = formattedAnswer;
     });
 
     // Submit the survey
-    context.read<SurveyBloc>().add(
-          SurveyEvent.submitSurvey(widget.survey.id),
-        );
+    context.read<SurveyBloc>().add(SurveyEvent.submitSurvey(widget.survey.id));
 
     Navigator.of(context).pop();
   }

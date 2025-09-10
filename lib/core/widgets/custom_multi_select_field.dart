@@ -40,7 +40,7 @@ class CustomMultiSelectField extends StatelessWidget {
           text: TextSpan(
             text: label,
             style: AppTextStyles.labelLarge.copyWith(
-              color: AppColors.textPrimary,
+              color: AppColors.primary,
               fontWeight: FontWeight.w600,
             ),
             children: [
@@ -148,7 +148,7 @@ class CustomMultiSelectField extends StatelessWidget {
                               color:
                                   isSelected
                                       ? AppColors.primary
-                                      : AppColors.textPrimary,
+                                      : Colors.black,
                               fontWeight:
                                   isSelected
                                       ? FontWeight.w600

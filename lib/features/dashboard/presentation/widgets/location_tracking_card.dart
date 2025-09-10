@@ -5,6 +5,7 @@ import 'package:geolocator/geolocator.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/gradient_utils.dart';
 import '../../../../core/services/trip_detection_service.dart';
 import '../bloc/dashboard_bloc.dart';
 
@@ -15,33 +16,61 @@ class LocationTrackingCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<DashboardBloc, DashboardState>(
       builder: (context, state) {
-        return Card(
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+        return Container(
+          decoration: BoxDecoration(
+            gradient: GradientUtils.surface,
+            borderRadius: BorderRadius.circular(24.r),
+            border: Border.all(
+              color: AppColors.outline.withOpacity(0.08),
+              width: 1,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.shadow.withOpacity(0.08),
+                blurRadius: 20,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
           child: Padding(
-            padding: EdgeInsets.all(16.w),
+            padding: EdgeInsets.all(24.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      'Location Tracking',
-                      style: AppTextStyles.titleMedium.copyWith(
-                        color: AppColors.textPrimary,
-                        fontWeight: FontWeight.w600,
+                    Container(
+                      padding: EdgeInsets.all(10.w),
+                      decoration: BoxDecoration(
+                        gradient: GradientUtils.accent,
+                        borderRadius: BorderRadius.circular(14.r),
+                      ),
+                      child: Icon(
+                        Icons.location_on,
+                        color: AppColors.onPrimary,
+                        size: 20.w,
                       ),
                     ),
+                    SizedBox(width: 12.w),
+                    Expanded(
+                      child: Text(
+                        'Location Tracking',
+                        style: AppTextStyles.titleLarge.copyWith(
+                          color: AppColors.textPrimary,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18.sp,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    SizedBox(width: 8.w),
                     _buildTrackingToggle(context, state),
                   ],
                 ),
-                SizedBox(height: 16.h),
+                SizedBox(height: 20.h),
                 _buildLocationInfo(context, state),
                 if (state.locationHistory.isNotEmpty) ...[
-                  SizedBox(height: 16.h),
+                  SizedBox(height: 20.h),
                   _buildLocationStats(context, state),
                 ],
               ],
@@ -58,7 +87,10 @@ class LocationTrackingCard extends StatelessWidget {
       children: [
         Icon(
           state.isLocationTracking ? Icons.location_on : Icons.location_off,
-          color: state.isLocationTracking ? AppColors.success : AppColors.textSecondary,
+          color:
+              state.isLocationTracking
+                  ? AppColors.success
+                  : AppColors.textSecondary,
           size: 20,
         ),
         SizedBox(width: 8.w),
@@ -92,7 +124,9 @@ class LocationTrackingCard extends StatelessWidget {
           ),
           SizedBox(width: 8.w),
           Text(
-            state.isLocationTracking ? 'Getting location...' : 'Location tracking disabled',
+            state.isLocationTracking
+                ? 'Getting location...'
+                : 'Location tracking disabled',
             style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.textSecondary,
             ),
@@ -107,11 +141,7 @@ class LocationTrackingCard extends StatelessWidget {
       children: [
         Row(
           children: [
-            Icon(
-              Icons.my_location,
-              color: AppColors.primary,
-              size: 20,
-            ),
+            Icon(Icons.my_location, color: AppColors.primary, size: 20),
             SizedBox(width: 8.w),
             Text(
               'Current Location',
@@ -198,10 +228,11 @@ class LocationTrackingCard extends StatelessWidget {
 
   String _getDisplaySpeed(DashboardState state) {
     // If there's an active trip and it's in stopped state, show 0 speed
-    if (state.currentTrip != null && state.currentTrip!.state == TripState.stopped) {
+    if (state.currentTrip != null &&
+        state.currentTrip!.state == TripState.stopped) {
       return '0.0 m/s';
     }
-    
+
     // Otherwise show actual GPS speed
     final speed = state.currentLocation?.speed ?? 0;
     return '${speed.toStringAsFixed(1)} m/s';
@@ -215,11 +246,7 @@ class LocationTrackingCard extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(
-          icon,
-          color: AppColors.primary,
-          size: 20,
-        ),
+        Icon(icon, color: AppColors.primary, size: 20),
         SizedBox(height: 4.h),
         Text(
           value,

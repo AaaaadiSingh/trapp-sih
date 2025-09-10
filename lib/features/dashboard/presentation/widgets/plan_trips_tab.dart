@@ -6,6 +6,7 @@ import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/gradient_utils.dart';
 import '../../domain/entities/trip_plan.dart';
 import '../bloc/trip_plan_bloc.dart';
 
@@ -27,10 +28,7 @@ class PlanTripsTab extends StatelessWidget {
 
         if (state.error != null) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.error!),
-              backgroundColor: Colors.red,
-            ),
+            SnackBar(content: Text(state.error!), backgroundColor: Colors.red),
           );
         }
       },
@@ -101,7 +99,9 @@ class PlanTripsTab extends StatelessWidget {
         SizedBox(height: 16.h),
         Card(
           elevation: 2,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           child: Padding(
             padding: EdgeInsets.all(16.w),
             child: const TripPlanForm(),
@@ -164,7 +164,7 @@ class PlanTripsTab extends StatelessWidget {
   Widget _buildTripPlanCard(BuildContext context, TripPlan trip) {
     final dateFormat = DateFormat('MMM d, yyyy');
     final timeFormat = DateFormat('h:mm a');
-    
+
     return Card(
       elevation: 2,
       margin: EdgeInsets.only(bottom: 16.h),
@@ -232,11 +232,7 @@ class PlanTripsTab extends StatelessWidget {
             SizedBox(height: 4.h),
             Row(
               children: [
-                const Icon(
-                  Icons.flag,
-                  color: AppColors.secondary,
-                  size: 20,
-                ),
+                const Icon(Icons.flag, color: AppColors.secondary, size: 20),
                 SizedBox(width: 8.w),
                 Expanded(
                   child: Text(
@@ -249,7 +245,7 @@ class PlanTripsTab extends StatelessWidget {
                 ),
               ],
             ),
-            if (trip.notes != null && trip.notes!.isNotEmpty) ...[  
+            if (trip.notes != null && trip.notes!.isNotEmpty) ...[
               SizedBox(height: 16.h),
               Text(
                 'Notes:',
@@ -278,7 +274,10 @@ class PlanTripsTab extends StatelessWidget {
                   icon: const Icon(Icons.edit, size: 16),
                   label: const Text('Edit'),
                   style: OutlinedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 12.w,
+                      vertical: 8.h,
+                    ),
                     minimumSize: Size.zero,
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
@@ -291,9 +290,18 @@ class PlanTripsTab extends StatelessWidget {
                   icon: const Icon(Icons.navigation, size: 16),
                   label: const Text('Start'),
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.white,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 12.w,
+                      vertical: 8.h,
+                    ),
                     minimumSize: Size.zero,
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                    elevation: 2,
                   ),
                 ),
               ],
@@ -333,11 +341,7 @@ class PlanTripsTab extends StatelessWidget {
         color: iconColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
       ),
-      child: Icon(
-        iconData,
-        color: iconColor,
-        size: 24.sp,
-      ),
+      child: Icon(iconData, color: iconColor, size: 24.sp),
     );
   }
 }
@@ -354,7 +358,7 @@ class _TripPlanFormState extends State<TripPlanForm> {
   final _originController = TextEditingController();
   final _destinationController = TextEditingController();
   final _notesController = TextEditingController();
-  
+
   DateTime _selectedDate = DateTime.now();
   TimeOfDay _selectedTime = TimeOfDay.now();
   TransportMode _selectedTransportMode = TransportMode.car;
@@ -378,7 +382,10 @@ class _TripPlanFormState extends State<TripPlanForm> {
             controller: _originController,
             decoration: InputDecoration(
               labelText: 'Origin',
-              prefixIcon: const Icon(Icons.location_on, color: AppColors.primary),
+              prefixIcon: const Icon(
+                Icons.location_on,
+                color: AppColors.primary,
+              ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -472,15 +479,34 @@ class _TripPlanFormState extends State<TripPlanForm> {
           SizedBox(height: 24.h),
           SizedBox(
             width: double.infinity,
-            child: ElevatedButton(
-              onPressed: _submitForm,
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 12.h),
+            child: Container(
+              height: 52.h,
+              decoration: BoxDecoration(
+                gradient: GradientUtils.primary,
+                borderRadius: BorderRadius.circular(16.r),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primary.withOpacity(0.3),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
-              child: Text(
-                'Plan Trip',
-                style: AppTextStyles.titleMedium.copyWith(
-                  color: Colors.white,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: _submitForm,
+                  borderRadius: BorderRadius.circular(16.r),
+                  child: Center(
+                    child: Text(
+                      'Plan Trip',
+                      style: AppTextStyles.titleMedium.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -494,68 +520,79 @@ class _TripPlanFormState extends State<TripPlanForm> {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
-        children: TransportMode.values.map((mode) {
-          final isSelected = mode == _selectedTransportMode;
-          IconData iconData;
-          String label;
+        children:
+            TransportMode.values.map((mode) {
+              final isSelected = mode == _selectedTransportMode;
+              IconData iconData;
+              String label;
 
-          switch (mode) {
-            case TransportMode.car:
-              iconData = Icons.directions_car;
-              label = 'Car';
-              break;
-            case TransportMode.publicTransport:
-              iconData = Icons.directions_bus;
-              label = 'Public Transport';
-              break;
-            case TransportMode.bicycle:
-              iconData = Icons.directions_bike;
-              label = 'Bicycle';
-              break;
-            case TransportMode.walking:
-              iconData = Icons.directions_walk;
-              label = 'Walking';
-              break;
-          }
+              switch (mode) {
+                case TransportMode.car:
+                  iconData = Icons.directions_car;
+                  label = 'Car';
+                  break;
+                case TransportMode.publicTransport:
+                  iconData = Icons.directions_bus;
+                  label = 'Public Transport';
+                  break;
+                case TransportMode.bicycle:
+                  iconData = Icons.directions_bike;
+                  label = 'Bicycle';
+                  break;
+                case TransportMode.walking:
+                  iconData = Icons.directions_walk;
+                  label = 'Walking';
+                  break;
+              }
 
-          return Padding(
-            padding: EdgeInsets.only(right: 12.w),
-            child: InkWell(
-              onTap: () {
-                setState(() {
-                  _selectedTransportMode = mode;
-                });
-              },
-              borderRadius: BorderRadius.circular(8),
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-                decoration: BoxDecoration(
-                  color: isSelected
-                      ? AppColors.primary
-                      : AppColors.primary.withValues(alpha: 0.1),
+              return Padding(
+                padding: EdgeInsets.only(right: 12.w),
+                child: InkWell(
+                  onTap: () {
+                    setState(() {
+                      _selectedTransportMode = mode;
+                    });
+                  },
                   borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      iconData,
-                      color: isSelected ? Colors.white : AppColors.primary,
-                      size: 20.sp,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 12.w,
+                      vertical: 8.h,
                     ),
-                    SizedBox(width: 8.w),
-                    Text(
-                      label,
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        color: isSelected ? Colors.white : AppColors.textPrimary,
-                        fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
-                      ),
+                    decoration: BoxDecoration(
+                      color:
+                          isSelected
+                              ? AppColors.primary
+                              : AppColors.primary.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                  ],
+                    child: Row(
+                      children: [
+                        Icon(
+                          iconData,
+                          color: isSelected ? Colors.white : AppColors.primary,
+                          size: 20.sp,
+                        ),
+                        SizedBox(width: 8.w),
+                        Text(
+                          label,
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            color:
+                                isSelected
+                                    ? Colors.white
+                                    : AppColors.textPrimary,
+                            fontWeight:
+                                isSelected
+                                    ? FontWeight.w500
+                                    : FontWeight.normal,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          );
-        }).toList(),
+              );
+            }).toList(),
       ),
     );
   }
@@ -599,15 +636,15 @@ class _TripPlanFormState extends State<TripPlanForm> {
 
       // Create the trip plan
       context.read<TripPlanBloc>().add(
-            TripPlanEvent.createTripPlan(
-              origin: _originController.text,
-              destination: _destinationController.text,
-              plannedDate: _selectedDate,
-              plannedTime: plannedDateTime,
-              transportMode: _selectedTransportMode,
-              notes: _notesController.text.isEmpty ? null : _notesController.text,
-            ),
-          );
+        TripPlanEvent.createTripPlan(
+          origin: _originController.text,
+          destination: _destinationController.text,
+          plannedDate: _selectedDate,
+          plannedTime: plannedDateTime,
+          transportMode: _selectedTransportMode,
+          notes: _notesController.text.isEmpty ? null : _notesController.text,
+        ),
+      );
 
       // Reset the form
       _formKey.currentState!.reset();

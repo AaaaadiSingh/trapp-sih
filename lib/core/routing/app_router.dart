@@ -33,22 +33,23 @@ class AppRouter {
     redirect: (context, state) async {
       // Check if onboarding is completed
       final prefs = sl<SharedPreferences>();
-      final isOnboardingCompleted = prefs.getBool(AppConstants.onboardingCompletedKey) ?? false;
-      
+      final isOnboardingCompleted =
+          prefs.getBool(AppConstants.onboardingCompletedKey) ?? false;
+
       // If user is on onboarding pages and onboarding is completed, redirect to dashboard
-      if (isOnboardingCompleted && 
-          (state.matchedLocation == personalInfo || 
-           state.matchedLocation == travelPreferences ||
-           state.matchedLocation == locationDemographics ||
-           state.matchedLocation == reviewConfirmation)) {
+      if (isOnboardingCompleted &&
+          (state.matchedLocation == personalInfo ||
+              state.matchedLocation == travelPreferences ||
+              state.matchedLocation == locationDemographics ||
+              state.matchedLocation == reviewConfirmation)) {
         return dashboard;
       }
-      
+
       // If user is trying to access dashboard but onboarding is not completed, redirect to onboarding
       if (!isOnboardingCompleted && state.matchedLocation == dashboard) {
         return personalInfo;
       }
-      
+
       return null; // No redirect needed
     },
     routes: [
@@ -84,9 +85,7 @@ class AppRouter {
             });
             return const SizedBox.shrink();
           }
-          return LocationDemographicsPage(
-            personalInfo: personalInfo,
-          );
+          return LocationDemographicsPage(personalInfo: personalInfo);
         },
       ),
       GoRoute(
@@ -153,10 +152,7 @@ class ProfileNavigator {
     BuildContext context,
     PersonalInfo personalInfo,
   ) {
-    context.go(
-      AppRouter.locationDemographics,
-      extra: personalInfo,
-    );
+    context.go(AppRouter.locationDemographics, extra: personalInfo);
   }
 
   static void toReviewConfirmation(
@@ -185,16 +181,14 @@ class ProfileNavigator {
     context.go(AppRouter.debug);
   }
 
-  static void toTripMap(BuildContext context, {
+  static void toTripMap(
+    BuildContext context, {
     DetectedTrip? trip,
     Position? currentLocation,
   }) {
     context.push(
       AppRouter.tripMap,
-      extra: {
-        'trip': trip,
-        'currentLocation': currentLocation,
-      },
+      extra: {'trip': trip, 'currentLocation': currentLocation},
     );
   }
 
