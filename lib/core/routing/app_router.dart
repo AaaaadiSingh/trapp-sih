@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:geolocator/geolocator.dart';
 
 import '../../features/profile/presentation/pages/personal_info_page.dart';
 import '../../features/profile/presentation/pages/travel_preferences_page.dart';
@@ -12,8 +13,10 @@ import '../../features/profile/domain/entities/personal_info.dart';
 import '../../features/profile/domain/entities/travel_preferences.dart';
 import '../../features/profile/domain/entities/location_demographics.dart';
 import '../../features/debug/debug_screen.dart';
+import '../../features/dashboard/presentation/screens/trip_map_screen.dart';
 import '../constants/app_constants.dart';
 import '../di/injection_container.dart';
+import '../services/trip_detection_service.dart';
 
 class AppRouter {
   static const String personalInfo = '/personal-info';
@@ -23,6 +26,7 @@ class AppRouter {
   static const String dashboard = '/dashboard';
   static const String settings = '/settings';
   static const String debug = '/debug';
+  static const String tripMap = '/trip-map';
 
   static final GoRouter router = GoRouter(
     initialLocation: personalInfo,
@@ -121,6 +125,17 @@ class AppRouter {
         name: 'debug',
         builder: (context, state) => const DebugScreen(),
       ),
+      GoRoute(
+        path: tripMap,
+        name: 'trip-map',
+        builder: (context, state) {
+          final data = state.extra as Map<String, dynamic>?;
+          return TripMapScreen(
+            trip: data?['trip'] as DetectedTrip?,
+            currentLocation: data?['currentLocation'] as Position?,
+          );
+        },
+      ),
     ],
   );
 }
@@ -168,6 +183,19 @@ class ProfileNavigator {
 
   static void toDebug(BuildContext context) {
     context.go(AppRouter.debug);
+  }
+
+  static void toTripMap(BuildContext context, {
+    DetectedTrip? trip,
+    Position? currentLocation,
+  }) {
+    context.push(
+      AppRouter.tripMap,
+      extra: {
+        'trip': trip,
+        'currentLocation': currentLocation,
+      },
+    );
   }
 
   static void goBack(BuildContext context) {

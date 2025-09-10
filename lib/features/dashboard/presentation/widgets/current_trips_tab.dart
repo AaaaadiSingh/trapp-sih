@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:sih/features/dashboard/domain/entities/dashboard_data.dart';
 
+import '../../../../core/services/trip_detection_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/routing/app_router.dart';
 import '../bloc/dashboard_bloc.dart';
 
 class CurrentTripsTab extends StatelessWidget {
@@ -185,18 +188,20 @@ class CurrentTripsTab extends StatelessWidget {
   }
 
   Widget _buildTripCard(BuildContext context, trip) {
-    return Card(
-      elevation: 2,
-      margin: EdgeInsets.only(bottom: 12.h),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return BlocBuilder<DashboardBloc, DashboardState>(
+      builder: (context, state) {
+        return Card(
+          elevation: 2,
+          margin: EdgeInsets.only(bottom: 12.h),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          child: Padding(
+            padding: EdgeInsets.all(16.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
                 _buildTripStatusChip(context, trip.status),
                 Text(
                   '${_formatTime(trip.startTime)} - ${_formatTime(trip.endTime)}',
@@ -291,7 +296,45 @@ class CurrentTripsTab extends StatelessWidget {
                 if (trip.status == TripStatus.inProgress)
                   OutlinedButton(
                     onPressed: () {
-                      // Show trip details or navigation
+                      // Check if there's a live detected trip
+                      if (state.currentTrip != null) {
+                        // Use live trip data
+                        ProfileNavigator.toTripMap(
+                          context,
+                          trip: state.currentTrip,
+                          currentLocation: state.currentLocation,
+                        );
+                      } else {
+                        // Create a mock DetectedTrip from TripData for map display
+                        final mockTrip = DetectedTrip(
+                          id: trip.id,
+                          startTime: trip.startTime,
+                          startPosition: state.currentLocation ?? Position(
+                            latitude: 0.0,
+                            longitude: 0.0,
+                            timestamp: DateTime.now(),
+                            accuracy: 0.0,
+                            altitude: 0.0,
+                            altitudeAccuracy: 0.0,
+                            heading: 0.0,
+                            headingAccuracy: 0.0,
+                            speed: 0.0,
+                            speedAccuracy: 0.0,
+                          ),
+                          route: state.currentLocation != null ? [state.currentLocation!] : [],
+                          totalDistance: trip.distance * 1000, // Convert km to meters
+                          duration: Duration(minutes: trip.duration),
+                          averageSpeed: 0.0,
+                          maxSpeed: 0.0,
+                          state: TripState.moving,
+                        );
+                        
+                        ProfileNavigator.toTripMap(
+                          context,
+                          trip: mockTrip,
+                          currentLocation: state.currentLocation,
+                        );
+                      }
                     },
                     style: OutlinedButton.styleFrom(
                       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
@@ -302,9 +345,11 @@ class CurrentTripsTab extends StatelessWidget {
                   ),
               ],
             ),
-          ],
-        ),
-      ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 

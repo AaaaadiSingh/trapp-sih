@@ -16,7 +16,8 @@ class LocationService {
   bool _hasLocationConsent = false;
 
   // Stream controller for location updates
-  final StreamController<Position> _locationController = StreamController<Position>.broadcast();
+  final StreamController<Position> _locationController =
+      StreamController<Position>.broadcast();
   Stream<Position> get locationStream => _locationController.stream;
 
   // Getters
@@ -28,30 +29,40 @@ class LocationService {
   Future<Either<Failure, bool>> requestLocationPermission() async {
     try {
       _logger.i('Requesting location permission');
-      
+
       // Check if location services are enabled
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
         _logger.w('Location services are disabled');
-        return const Left(PermissionFailure(message: 'Location services are disabled. Please enable location services.'));
+        return const Left(
+          PermissionFailure(
+            message:
+                'Location services are disabled. Please enable location services.',
+          ),
+        );
       }
 
       // Check current permission status
       LocationPermission permission = await Geolocator.checkPermission();
-      
+
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
           _logger.w('Location permission denied');
-          return const Left(PermissionFailure(message: 'Location permission denied'));
+          return const Left(
+            PermissionFailure(message: 'Location permission denied'),
+          );
         }
       }
-      
+
       if (permission == LocationPermission.deniedForever) {
         _logger.w('Location permission denied forever');
-        return const Left(PermissionFailure(
-          message: 'Location permissions are permanently denied. Please enable them in app settings.'
-        ));
+        return const Left(
+          PermissionFailure(
+            message:
+                'Location permissions are permanently denied. Please enable them in app settings.',
+          ),
+        );
       }
 
       _hasLocationConsent = true;
@@ -59,7 +70,9 @@ class LocationService {
       return const Right(true);
     } catch (e) {
       _logger.e('Error requesting location permission: $e');
-      return Left(GeneralFailure(message: 'Failed to request location permission: $e'));
+      return Left(
+        GeneralFailure(message: 'Failed to request location permission: $e'),
+      );
     }
   }
 
@@ -71,25 +84,31 @@ class LocationService {
         if (permissionResult.isLeft()) {
           return permissionResult.fold(
             (failure) => Left(failure),
-            (_) => const Left(PermissionFailure(message: 'Permission not granted')),
+            (_) => const Left(
+              PermissionFailure(message: 'Permission not granted'),
+            ),
           );
         }
       }
 
       _logger.i('Getting current location');
-      
+
       final position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
         timeLimit: const Duration(seconds: 10),
       );
-      
+
       _lastKnownPosition = position;
-      _logger.i('Current location obtained: ${position.latitude}, ${position.longitude}');
-      
+      _logger.i(
+        'Current location obtained: ${position.latitude}, ${position.longitude}',
+      );
+
       return Right(position);
     } catch (e) {
       _logger.e('Error getting current location: $e');
-      return Left(GeneralFailure(message: 'Failed to get current location: $e'));
+      return Left(
+        GeneralFailure(message: 'Failed to get current location: $e'),
+      );
     }
   }
 
@@ -98,14 +117,16 @@ class LocationService {
     try {
       print('🔥 LocationService.startLocationTracking() called');
       print('🔥 Has consent: $_hasLocationConsent, Is tracking: $_isTracking');
-      
+
       if (!_hasLocationConsent) {
         print('🔥 Requesting location permission...');
         final permissionResult = await requestLocationPermission();
         if (permissionResult.isLeft()) {
           return permissionResult.fold(
             (failure) => Left(failure),
-            (_) => const Left(PermissionFailure(message: 'Permission not granted')),
+            (_) => const Left(
+              PermissionFailure(message: 'Permission not granted'),
+            ),
           );
         }
       }
@@ -118,11 +139,15 @@ class LocationService {
 
       _logger.i('Starting location tracking');
       print('🔥 Actually starting location tracking...');
-      
+
       const LocationSettings locationSettings = LocationSettings(
-        accuracy: LocationAccuracy.medium, // Balanced accuracy for battery optimization
+        accuracy:
+            LocationAccuracy
+                .medium, // Balanced accuracy for battery optimization
         distanceFilter: 10, // Update every 10 meters as required
-        timeLimit: Duration(minutes: 2), // Increased timeout for better GPS acquisition
+        timeLimit: Duration(
+          minutes: 2,
+        ), // Increased timeout for better GPS acquisition
       );
 
       _positionStream = Geolocator.getPositionStream(
@@ -131,11 +156,13 @@ class LocationService {
         (Position position) {
           _lastKnownPosition = position;
           _locationController.add(position);
-          _logger.d('Location update: ${position.latitude}, ${position.longitude}');
+          _logger.d(
+            'Location update: ${position.latitude}, ${position.longitude}',
+          );
         },
         onError: (error) {
           _logger.e('Location tracking error: $error');
-          
+
           // Handle timeout gracefully - don't crash the app
           if (error.toString().contains('TimeoutException')) {
             _logger.w('GPS timeout - continuing with last known position');
@@ -154,7 +181,9 @@ class LocationService {
       return const Right(null);
     } catch (e) {
       _logger.e('Error starting location tracking: $e');
-      return Left(GeneralFailure(message: 'Failed to start location tracking: $e'));
+      return Left(
+        GeneralFailure(message: 'Failed to start location tracking: $e'),
+      );
     }
   }
 
@@ -162,11 +191,11 @@ class LocationService {
   Future<void> stopLocationTracking() async {
     try {
       _logger.i('Stopping location tracking');
-      
+
       await _positionStream?.cancel();
       _positionStream = null;
       _isTracking = false;
-      
+
       _logger.i('Location tracking stopped');
     } catch (e) {
       _logger.e('Error stopping location tracking: $e');
@@ -177,7 +206,7 @@ class LocationService {
   void setLocationConsent(bool hasConsent) {
     _hasLocationConsent = hasConsent;
     _logger.i('Location consent set to: $hasConsent');
-    
+
     if (!hasConsent && _isTracking) {
       stopLocationTracking();
     }
