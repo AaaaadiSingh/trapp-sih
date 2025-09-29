@@ -123,8 +123,8 @@ class _SplashScreenState extends State<SplashScreen>
                       return Transform.scale(
                         scale: _logoAnimation.value,
                         child: Container(
-                          width: 120,
-                          height: 120,
+                          width: 220,
+                          height: 220,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
                             boxShadow: [
@@ -138,13 +138,13 @@ class _SplashScreenState extends State<SplashScreen>
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(20),
                             child: Image.asset(
-                              'assets/images/Natpac.png',
+                              'assets/images/logo.png',
                               fit: BoxFit.contain,
                               errorBuilder: (context, error, stackTrace) => Container(
                                 color: Colors.white,
                                 child: const Icon(
                                   Icons.image,
-                                  size: 60,
+                                  size: 96,
                                   color: Colors.grey,
                                 ),
                               ),
