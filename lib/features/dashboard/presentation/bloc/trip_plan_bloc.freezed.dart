@@ -29,6 +29,7 @@ mixin _$TripPlanEvent {
       String? notes,
     )
     createTripPlan,
+    required TResult Function(String tripId) deleteTripPlan,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
@@ -42,6 +43,7 @@ mixin _$TripPlanEvent {
       String? notes,
     )?
     createTripPlan,
+    TResult? Function(String tripId)? deleteTripPlan,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
@@ -55,22 +57,26 @@ mixin _$TripPlanEvent {
       String? notes,
     )?
     createTripPlan,
+    TResult Function(String tripId)? deleteTripPlan,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(LoadTripPlans value) loadTripPlans,
     required TResult Function(CreateTripPlan value) createTripPlan,
+    required TResult Function(DeleteTripPlan value) deleteTripPlan,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(LoadTripPlans value)? loadTripPlans,
     TResult? Function(CreateTripPlan value)? createTripPlan,
+    TResult? Function(DeleteTripPlan value)? deleteTripPlan,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(LoadTripPlans value)? loadTripPlans,
     TResult Function(CreateTripPlan value)? createTripPlan,
+    TResult Function(DeleteTripPlan value)? deleteTripPlan,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
 }
@@ -150,6 +156,7 @@ class _$LoadTripPlansImpl implements LoadTripPlans {
       String? notes,
     )
     createTripPlan,
+    required TResult Function(String tripId) deleteTripPlan,
   }) {
     return loadTripPlans();
   }
@@ -167,6 +174,7 @@ class _$LoadTripPlansImpl implements LoadTripPlans {
       String? notes,
     )?
     createTripPlan,
+    TResult? Function(String tripId)? deleteTripPlan,
   }) {
     return loadTripPlans?.call();
   }
@@ -184,6 +192,7 @@ class _$LoadTripPlansImpl implements LoadTripPlans {
       String? notes,
     )?
     createTripPlan,
+    TResult Function(String tripId)? deleteTripPlan,
     required TResult orElse(),
   }) {
     if (loadTripPlans != null) {
@@ -197,6 +206,7 @@ class _$LoadTripPlansImpl implements LoadTripPlans {
   TResult map<TResult extends Object?>({
     required TResult Function(LoadTripPlans value) loadTripPlans,
     required TResult Function(CreateTripPlan value) createTripPlan,
+    required TResult Function(DeleteTripPlan value) deleteTripPlan,
   }) {
     return loadTripPlans(this);
   }
@@ -206,6 +216,7 @@ class _$LoadTripPlansImpl implements LoadTripPlans {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(LoadTripPlans value)? loadTripPlans,
     TResult? Function(CreateTripPlan value)? createTripPlan,
+    TResult? Function(DeleteTripPlan value)? deleteTripPlan,
   }) {
     return loadTripPlans?.call(this);
   }
@@ -215,6 +226,7 @@ class _$LoadTripPlansImpl implements LoadTripPlans {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(LoadTripPlans value)? loadTripPlans,
     TResult Function(CreateTripPlan value)? createTripPlan,
+    TResult Function(DeleteTripPlan value)? deleteTripPlan,
     required TResult orElse(),
   }) {
     if (loadTripPlans != null) {
@@ -385,6 +397,7 @@ class _$CreateTripPlanImpl implements CreateTripPlan {
       String? notes,
     )
     createTripPlan,
+    required TResult Function(String tripId) deleteTripPlan,
   }) {
     return createTripPlan(
       origin,
@@ -409,6 +422,7 @@ class _$CreateTripPlanImpl implements CreateTripPlan {
       String? notes,
     )?
     createTripPlan,
+    TResult? Function(String tripId)? deleteTripPlan,
   }) {
     return createTripPlan?.call(
       origin,
@@ -433,6 +447,7 @@ class _$CreateTripPlanImpl implements CreateTripPlan {
       String? notes,
     )?
     createTripPlan,
+    TResult Function(String tripId)? deleteTripPlan,
     required TResult orElse(),
   }) {
     if (createTripPlan != null) {
@@ -453,6 +468,7 @@ class _$CreateTripPlanImpl implements CreateTripPlan {
   TResult map<TResult extends Object?>({
     required TResult Function(LoadTripPlans value) loadTripPlans,
     required TResult Function(CreateTripPlan value) createTripPlan,
+    required TResult Function(DeleteTripPlan value) deleteTripPlan,
   }) {
     return createTripPlan(this);
   }
@@ -462,6 +478,7 @@ class _$CreateTripPlanImpl implements CreateTripPlan {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(LoadTripPlans value)? loadTripPlans,
     TResult? Function(CreateTripPlan value)? createTripPlan,
+    TResult? Function(DeleteTripPlan value)? deleteTripPlan,
   }) {
     return createTripPlan?.call(this);
   }
@@ -471,6 +488,7 @@ class _$CreateTripPlanImpl implements CreateTripPlan {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(LoadTripPlans value)? loadTripPlans,
     TResult Function(CreateTripPlan value)? createTripPlan,
+    TResult Function(DeleteTripPlan value)? deleteTripPlan,
     required TResult orElse(),
   }) {
     if (createTripPlan != null) {
@@ -501,6 +519,183 @@ abstract class CreateTripPlan implements TripPlanEvent {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$CreateTripPlanImplCopyWith<_$CreateTripPlanImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$DeleteTripPlanImplCopyWith<$Res> {
+  factory _$$DeleteTripPlanImplCopyWith(
+    _$DeleteTripPlanImpl value,
+    $Res Function(_$DeleteTripPlanImpl) then,
+  ) = __$$DeleteTripPlanImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String tripId});
+}
+
+/// @nodoc
+class __$$DeleteTripPlanImplCopyWithImpl<$Res>
+    extends _$TripPlanEventCopyWithImpl<$Res, _$DeleteTripPlanImpl>
+    implements _$$DeleteTripPlanImplCopyWith<$Res> {
+  __$$DeleteTripPlanImplCopyWithImpl(
+    _$DeleteTripPlanImpl _value,
+    $Res Function(_$DeleteTripPlanImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of TripPlanEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? tripId = null}) {
+    return _then(
+      _$DeleteTripPlanImpl(
+        tripId:
+            null == tripId
+                ? _value.tripId
+                : tripId // ignore: cast_nullable_to_non_nullable
+                    as String,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+
+class _$DeleteTripPlanImpl implements DeleteTripPlan {
+  const _$DeleteTripPlanImpl({required this.tripId});
+
+  @override
+  final String tripId;
+
+  @override
+  String toString() {
+    return 'TripPlanEvent.deleteTripPlan(tripId: $tripId)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$DeleteTripPlanImpl &&
+            (identical(other.tripId, tripId) || other.tripId == tripId));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, tripId);
+
+  /// Create a copy of TripPlanEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$DeleteTripPlanImplCopyWith<_$DeleteTripPlanImpl> get copyWith =>
+      __$$DeleteTripPlanImplCopyWithImpl<_$DeleteTripPlanImpl>(
+        this,
+        _$identity,
+      );
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() loadTripPlans,
+    required TResult Function(
+      String origin,
+      String destination,
+      DateTime plannedDate,
+      DateTime plannedTime,
+      TransportMode transportMode,
+      String? notes,
+    )
+    createTripPlan,
+    required TResult Function(String tripId) deleteTripPlan,
+  }) {
+    return deleteTripPlan(tripId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? loadTripPlans,
+    TResult? Function(
+      String origin,
+      String destination,
+      DateTime plannedDate,
+      DateTime plannedTime,
+      TransportMode transportMode,
+      String? notes,
+    )?
+    createTripPlan,
+    TResult? Function(String tripId)? deleteTripPlan,
+  }) {
+    return deleteTripPlan?.call(tripId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? loadTripPlans,
+    TResult Function(
+      String origin,
+      String destination,
+      DateTime plannedDate,
+      DateTime plannedTime,
+      TransportMode transportMode,
+      String? notes,
+    )?
+    createTripPlan,
+    TResult Function(String tripId)? deleteTripPlan,
+    required TResult orElse(),
+  }) {
+    if (deleteTripPlan != null) {
+      return deleteTripPlan(tripId);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(LoadTripPlans value) loadTripPlans,
+    required TResult Function(CreateTripPlan value) createTripPlan,
+    required TResult Function(DeleteTripPlan value) deleteTripPlan,
+  }) {
+    return deleteTripPlan(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(LoadTripPlans value)? loadTripPlans,
+    TResult? Function(CreateTripPlan value)? createTripPlan,
+    TResult? Function(DeleteTripPlan value)? deleteTripPlan,
+  }) {
+    return deleteTripPlan?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(LoadTripPlans value)? loadTripPlans,
+    TResult Function(CreateTripPlan value)? createTripPlan,
+    TResult Function(DeleteTripPlan value)? deleteTripPlan,
+    required TResult orElse(),
+  }) {
+    if (deleteTripPlan != null) {
+      return deleteTripPlan(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class DeleteTripPlan implements TripPlanEvent {
+  const factory DeleteTripPlan({required final String tripId}) =
+      _$DeleteTripPlanImpl;
+
+  String get tripId;
+
+  /// Create a copy of TripPlanEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$DeleteTripPlanImplCopyWith<_$DeleteTripPlanImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 

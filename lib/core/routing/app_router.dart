@@ -15,6 +15,8 @@ import '../../features/profile/domain/entities/travel_preferences.dart';
 import '../../features/profile/domain/entities/location_demographics.dart';
 import '../../features/debug/debug_screen.dart';
 import '../../features/dashboard/presentation/screens/trip_map_screen.dart';
+import '../../features/dashboard/presentation/screens/enhanced_dashboard_screen.dart';
+import '../../features/dashboard/presentation/screens/location_test_screen.dart';
 import '../constants/app_constants.dart';
 import '../di/injection_container.dart';
 import '../services/trip_detection_service.dart';
@@ -29,6 +31,8 @@ class AppRouter {
   static const String settings = '/settings';
   static const String debug = '/debug';
   static const String tripMap = '/trip-map';
+  static const String enhancedDashboard = '/enhanced-dashboard';
+  static const String locationTest = '/location-test';
 
   static final GoRouter router = GoRouter(
     initialLocation: splash,
@@ -142,6 +146,16 @@ class AppRouter {
           );
         },
       ),
+      GoRoute(
+        path: enhancedDashboard,
+        name: 'enhanced-dashboard',
+        builder: (context, state) => const EnhancedDashboardScreen(),
+      ),
+      GoRoute(
+        path: locationTest,
+        name: 'location-test',
+        builder: (context, state) => const LocationTestScreen(),
+      ),
     ],
   );
 }
@@ -203,5 +217,13 @@ class ProfileNavigator {
     if (context.canPop()) {
       context.pop();
     }
+  }
+
+  static void toEnhancedDashboard(BuildContext context) {
+    context.go(AppRouter.enhancedDashboard);
+  }
+
+  static void toLocationTest(BuildContext context) {
+    context.go(AppRouter.locationTest);
   }
 }

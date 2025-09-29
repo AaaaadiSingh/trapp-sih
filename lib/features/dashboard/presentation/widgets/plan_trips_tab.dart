@@ -3,16 +3,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:responsive_framework/responsive_framework.dart';
+import 'package:get_it/get_it.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/theme/gradient_utils.dart';
+import '../../../../core/services/local_storage_service.dart';
 import '../../domain/entities/trip_plan.dart';
+import '../../domain/entities/dashboard_data.dart';
 import '../bloc/trip_plan_bloc.dart';
+import '../bloc/dashboard_bloc.dart';
 
-class PlanTripsTab extends StatelessWidget {
+class PlanTripsTab extends StatefulWidget {
   const PlanTripsTab({super.key});
 
+  @override
+  State<PlanTripsTab> createState() => _PlanTripsTabState();
+}
+
+class _PlanTripsTabState extends State<PlanTripsTab> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<TripPlanBloc, TripPlanState>(
@@ -265,6 +274,19 @@ class PlanTripsTab extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
+                IconButton(
+                  onPressed: () {
+                    _showDeleteConfirmation(context, trip);
+                  },
+                  icon: const Icon(Icons.delete_outline, size: 20),
+                  style: IconButton.styleFrom(
+                    foregroundColor: AppColors.error,
+                    padding: EdgeInsets.all(8.w),
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                ),
+                SizedBox(width: 8.w),
                 OutlinedButton.icon(
                   onPressed: () {
                     // Edit trip plan
@@ -283,7 +305,7 @@ class PlanTripsTab extends StatelessWidget {
                 SizedBox(width: 8.w),
                 ElevatedButton.icon(
                   onPressed: () {
-                    // Start navigation
+                    _startTrip(context, trip);
                   },
                   icon: const Icon(Icons.navigation, size: 16),
                   label: const Text('Start'),
@@ -341,6 +363,90 @@ class PlanTripsTab extends StatelessWidget {
       ),
       child: Icon(iconData, color: iconColor, size: 24.sp),
     );
+  }
+
+  void _showDeleteConfirmation(BuildContext context, TripPlan trip) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Delete Trip Plan'),
+          content: Text(
+            'Are you sure you want to delete the trip plan from ${trip.origin} to ${trip.destination}?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                context.read<TripPlanBloc>().add(DeleteTripPlan(tripId: trip.id));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Trip plan deleted successfully'),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              },
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _startTrip(BuildContext context, TripPlan trip) async {
+    try {
+      final localStorageService = GetIt.instance<LocalStorageService>();
+      
+      // Convert planned trip to current trip
+      final currentTrip = TripData(
+        id: trip.id,
+        origin: trip.origin,
+        destination: trip.destination,
+        startTime: DateTime.now(),
+        endTime: DateTime.now().add(const Duration(hours: 1)), // Estimated
+        status: TripStatus.inProgress,
+      );
+
+      // Save to local storage
+      final result = await localStorageService.saveCurrentTrip(currentTrip);
+      
+      result.fold(
+        (failure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error starting trip: ${failure.message}'),
+              backgroundColor: AppColors.error,
+            ),
+          );
+        },
+        (success) {
+          // Remove from planned trips
+          context.read<TripPlanBloc>().add(DeleteTripPlan(tripId: trip.id));
+          
+          // Refresh dashboard data
+          context.read<DashboardBloc>().add(const LoadDashboardData());
+          
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Trip started successfully!'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        },
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error starting trip: $e'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    }
   }
 }
 
@@ -661,6 +767,95 @@ class _TripPlanFormState extends State<TripPlanForm> {
         _selectedTime = TimeOfDay.now();
         _selectedTransportMode = TransportMode.car;
       });
+    }
+  }
+
+  void _showDeleteConfirmation(BuildContext context, TripPlan trip) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Delete Trip Plan'),
+          content: Text(
+            'Are you sure you want to delete the trip from ${trip.origin} to ${trip.destination}?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                context.read<TripPlanBloc>().add(
+                  TripPlanEvent.deleteTripPlan(tripId: trip.id),
+                );
+              },
+              style: TextButton.styleFrom(
+                foregroundColor: AppColors.error,
+              ),
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _startTrip(BuildContext context, TripPlan trip) async {
+    try {
+      // Get local storage service
+      final localStorageService = GetIt.instance<LocalStorageService>();
+      
+      // Convert planned trip to current trip
+      final currentTrip = TripData(
+        id: trip.id,
+        origin: trip.origin,
+        destination: trip.destination,
+        startTime: DateTime.now(),
+        endTime: DateTime.now().add(const Duration(hours: 1)), // Estimated
+        status: TripStatus.inProgress,
+      );
+
+      // Save current trip to local storage
+      final result = await localStorageService.saveCurrentTrip(currentTrip);
+      
+      result.fold(
+        (failure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to start trip: ${failure.message}'),
+              backgroundColor: AppColors.error,
+            ),
+          );
+        },
+        (_) {
+          // Remove from planned trips
+          context.read<TripPlanBloc>().add(
+            TripPlanEvent.deleteTripPlan(tripId: trip.id),
+          );
+
+          // Refresh dashboard data
+          context.read<DashboardBloc>().add(
+            const DashboardEvent.loadDashboardData(),
+          );
+
+          // Show success message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Trip started: ${trip.origin} → ${trip.destination}'),
+              backgroundColor: AppColors.success,
+            ),
+          );
+        },
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error starting trip: $e'),
+          backgroundColor: AppColors.error,
+        ),
+      );
     }
   }
 }

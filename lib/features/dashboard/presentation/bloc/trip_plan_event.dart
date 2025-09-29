@@ -11,4 +11,7 @@ class TripPlanEvent with _$TripPlanEvent {
     required TransportMode transportMode,
     String? notes,
   }) = CreateTripPlan;
+  const factory TripPlanEvent.deleteTripPlan({
+    required String tripId,
+  }) = DeleteTripPlan;
 }

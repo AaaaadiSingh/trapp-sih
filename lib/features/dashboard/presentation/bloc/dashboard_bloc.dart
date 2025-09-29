@@ -8,6 +8,7 @@ import '../../domain/entities/dashboard_data.dart';
 import '../../../../core/services/location_service.dart';
 import '../../../../core/services/trip_detection_service.dart';
 import '../../../../core/services/trip_logging_service.dart';
+import '../../../../core/services/local_storage_service.dart';
 // DetectedTrip, TripLog, and TripStatistics are imported from services
 // DetectedTrip from trip_detection_service.dart
 // TripLog and TripStatistics from trip_logging_service.dart
@@ -22,6 +23,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   final LocationService _locationService;
   final TripDetectionService _tripDetectionService;
   final TripLoggingService _tripLoggingService;
+  final LocalStorageService _localStorageService;
   StreamSubscription<Position>? _locationSubscription;
   StreamSubscription<DetectedTrip>? _tripSubscription;
   StreamSubscription<TripEvent>? _tripEventSubscription;
@@ -31,6 +33,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     this._locationService,
     this._tripDetectionService,
     this._tripLoggingService,
+    this._localStorageService,
   ) : super(const DashboardState()) {
     print('🏗️ DashboardBloc constructor called');
     on<TabChanged>(_onTabChanged);
@@ -46,6 +49,17 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     // Listen to location updates
     _locationService.locationStream.listen((position) {
       add(DashboardEvent.locationUpdated(position));
+    });
+
+    // Listen to local storage changes for real-time updates
+    _localStorageService.currentTripsStream.listen((trips) {
+      // Reload dashboard data when current trips change
+      add(const DashboardEvent.loadDashboardData());
+    });
+
+    _localStorageService.detectedTripsStream.listen((trips) {
+      // Reload dashboard data when detected trips change
+      add(const DashboardEvent.loadDashboardData());
     });
   }
 
@@ -64,36 +78,35 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       // Auto-start location tracking and trip detection
       await _initializeLocationServices();
       
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 1));
+      // Load current trips from local storage
+      final currentTripsResult = await _localStorageService.getCurrentTrips();
+      final currentTrips = currentTripsResult.fold(
+        (failure) => <TripData>[],
+        (trips) => trips,
+      );
 
-      // Mock data
+      // Load detected trips from local storage
+      final detectedTripsResult = await _localStorageService.getDetectedTrips();
+      final detectedTrips = detectedTripsResult.fold(
+        (failure) => <DetectedTrip>[],
+        (trips) => trips,
+      );
+
+      // Calculate dashboard statistics
+      final totalTrips = _tripDetectionService.totalTrips + detectedTrips.length;
+      final totalDistance = detectedTrips.fold<double>(
+        0.0, 
+        (sum, trip) => sum + (trip.totalDistance / 1000), // Convert to km
+      );
+      final averageTripTime = detectedTrips.isNotEmpty 
+        ? detectedTrips.fold<int>(0, (sum, trip) => sum + trip.duration.inMinutes) / detectedTrips.length
+        : 0;
+
       final dashboardData = DashboardData(
-        totalTrips: _tripDetectionService.totalTrips,
-        estimatedDistance: 12.5,
-        estimatedTravelTime: 38,
-        currentTrips: [
-          TripData(
-            id: '1',
-            origin: 'Home',
-            destination: 'Office',
-            startTime: DateTime(2023, 1, 1, 8, 5),
-            endTime: DateTime(2023, 1, 1, 8, 34),
-            status: TripStatus.inProgress,
-            distance: 5.2,
-            duration: 29,
-          ),
-          TripData(
-            id: '2',
-            origin: 'Office',
-            destination: 'Fitness Center',
-            startTime: DateTime(2023, 1, 1, 19, 10),
-            endTime: DateTime(2023, 1, 1, 19, 30),
-            status: TripStatus.scheduled,
-            distance: 7.3,
-            duration: 20,
-          ),
-        ],
+        totalTrips: totalTrips,
+        estimatedDistance: totalDistance,
+        estimatedTravelTime: averageTripTime.round(),
+        currentTrips: currentTrips,
       );
 
       emit(state.copyWith(
@@ -299,6 +312,11 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     Emitter<DashboardState> emit,
   ) async {
     try {
+      // Save detected trip to local storage if available
+      if (state.currentTrip != null) {
+        await _localStorageService.saveDetectedTrip(state.currentTrip!);
+      }
+
       // Add to recent trips (keep last 10)
       final updatedRecentTrips = [event.tripLog, ...state.recentTrips];
       if (updatedRecentTrips.length > 10) {

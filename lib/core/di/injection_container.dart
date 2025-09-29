@@ -11,5 +11,5 @@ final sl = GetIt.instance;
   asExtension: true,
 )
 Future<void> configureDependencies() async {
-  sl.init();
+  await sl.init();
 }

@@ -41,10 +41,18 @@ import '../../features/settings/domain/usecases/get_privacy_settings.dart'
 import '../../features/settings/domain/usecases/update_privacy_settings.dart'
     as _i813;
 import '../../features/settings/presentation/bloc/settings_bloc.dart' as _i585;
+import '../services/enhanced_location_service.dart' as _i715;
+import '../services/enhanced_trip_detection_service.dart' as _i468;
+import '../services/local_storage_service.dart' as _i527;
+import '../services/location_configuration_service.dart' as _i809;
 import '../services/location_service.dart' as _i669;
+import '../services/motion_detection_service.dart' as _i1046;
 import '../services/notification_service.dart' as _i941;
+import '../services/performance_logging_service.dart' as _i196;
+import '../services/sensor_fusion_service.dart' as _i36;
 import '../services/trip_detection_service.dart' as _i33;
 import '../services/trip_logging_service.dart' as _i521;
+import '../services/trip_sync_service.dart' as _i616;
 import 'injection.dart' as _i464;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -60,7 +68,6 @@ extension GetItInjectableX on _i174.GetIt {
       preResolve: true,
     );
     gh.factory<_i79.SurveyBloc>(() => _i79.SurveyBloc());
-    gh.factory<_i405.TripPlanBloc>(() => _i405.TripPlanBloc());
     gh.factory<_i105.LocationDemographicsBloc>(
       () => _i105.LocationDemographicsBloc(),
     );
@@ -72,20 +79,19 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i130.TravelPreferencesBloc(),
     );
     gh.singleton<_i669.LocationService>(() => _i669.LocationService());
+    gh.singleton<_i1046.MotionDetectionService>(
+      () => _i1046.MotionDetectionService(),
+    );
     gh.singleton<_i941.NotificationService>(() => _i941.NotificationService());
+    gh.singleton<_i36.SensorFusionService>(() => _i36.SensorFusionService());
     gh.singleton<_i521.TripLoggingService>(() => _i521.TripLoggingService());
+    gh.singleton<_i527.LocalStorageService>(
+      () => _i527.LocalStorageService(gh<_i460.SharedPreferences>()),
+    );
     gh.singleton<_i33.TripDetectionService>(
       () => _i33.TripDetectionService(
         gh<_i669.LocationService>(),
         gh<_i941.NotificationService>(),
-      ),
-    );
-    gh.lazySingleton<_i188.SettingsRemoteDataSource>(
-      () => _i188.SettingsRemoteDataSourceImpl(),
-    );
-    gh.lazySingleton<_i599.SettingsLocalDataSource>(
-      () => _i599.SettingsLocalDataSourceImpl(
-        sharedPreferences: gh<_i460.SharedPreferences>(),
       ),
     );
     gh.factory<_i652.DashboardBloc>(
@@ -93,6 +99,27 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i669.LocationService>(),
         gh<_i33.TripDetectionService>(),
         gh<_i521.TripLoggingService>(),
+        gh<_i527.LocalStorageService>(),
+      ),
+    );
+    gh.lazySingleton<_i188.SettingsRemoteDataSource>(
+      () => _i188.SettingsRemoteDataSourceImpl(),
+    );
+    gh.factory<_i616.TripSyncService>(
+      () => _i616.TripSyncService(gh<_i527.LocalStorageService>()),
+    );
+    gh.factory<_i405.TripPlanBloc>(
+      () => _i405.TripPlanBloc(gh<_i527.LocalStorageService>()),
+    );
+    gh.lazySingleton<_i599.SettingsLocalDataSource>(
+      () => _i599.SettingsLocalDataSourceImpl(
+        sharedPreferences: gh<_i460.SharedPreferences>(),
+      ),
+    );
+    gh.singleton<_i715.EnhancedLocationService>(
+      () => _i715.EnhancedLocationService(
+        gh<_i1046.MotionDetectionService>(),
+        gh<_i36.SensorFusionService>(),
       ),
     );
     gh.lazySingleton<_i674.SettingsRepository>(
@@ -100,6 +127,12 @@ extension GetItInjectableX on _i174.GetIt {
         localDataSource: gh<_i599.SettingsLocalDataSource>(),
         remoteDataSource: gh<_i188.SettingsRemoteDataSource>(),
       ),
+    );
+    gh.singleton<_i809.LocationConfigurationService>(
+      () => _i809.LocationConfigurationService(gh<_i527.LocalStorageService>()),
+    );
+    gh.singleton<_i196.PerformanceLoggingService>(
+      () => _i196.PerformanceLoggingService(gh<_i527.LocalStorageService>()),
     );
     gh.factory<_i190.DeleteUserData>(
       () => _i190.DeleteUserData(gh<_i674.SettingsRepository>()),
@@ -112,6 +145,14 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i813.UpdatePrivacySettings>(
       () => _i813.UpdatePrivacySettings(gh<_i674.SettingsRepository>()),
+    );
+    gh.singleton<_i468.EnhancedTripDetectionService>(
+      () => _i468.EnhancedTripDetectionService(
+        gh<_i715.EnhancedLocationService>(),
+        gh<_i1046.MotionDetectionService>(),
+        gh<_i941.NotificationService>(),
+        gh<_i196.PerformanceLoggingService>(),
+      ),
     );
     gh.factory<_i585.SettingsBloc>(
       () => _i585.SettingsBloc(

@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:responsive_framework/responsive_framework.dart';
+import 'package:get_it/get_it.dart';
 
 import 'core/constants/app_constants.dart';
 import 'core/di/injection_container.dart';
 import 'core/theme/app_theme.dart';
 import 'core/routing/app_router.dart';
+import 'core/services/trip_sync_service.dart';
 
 void main() async {
   print('🚀 App starting...');
@@ -30,6 +32,16 @@ void main() async {
   
   // Initialize dependency injection
   await configureDependencies();
+  
+  // Initialize trip synchronization service
+  final tripSyncService = GetIt.instance<TripSyncService>();
+  tripSyncService.startSync();
+  
+  // Add sample data for testing (only in debug mode)
+  assert(() {
+    tripSyncService.addSampleData();
+    return true;
+  }());
   
   runApp(const MyApp());
 }
