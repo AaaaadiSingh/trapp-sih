@@ -788,7 +788,7 @@ class DashboardView extends StatelessWidget {
           ),
           bottomNavigationBar: _buildBottomNavigationBar(context, state),
           floatingActionButton: state.selectedTabIndex == 1 
-              ? _buildFloatingActionButton(context) 
+              ? _buildFloatingActionButtons(context) 
               : null,
           floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         );
@@ -955,13 +955,30 @@ class DashboardView extends StatelessWidget {
     }
   }
 
-  Widget _buildFloatingActionButton(BuildContext context) {
-    return FloatingActionButton(
-      onPressed: () => _showApiDataPopup(context),
-      backgroundColor: AppColors.primary,
-      foregroundColor: AppColors.onPrimary,
-      child: const Icon(Icons.api),
-      tooltip: 'Show API Data',
+  Widget _buildFloatingActionButtons(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Location Insights Button
+        FloatingActionButton(
+          onPressed: () => _fetchLocationInsights(context),
+          backgroundColor: AppColors.secondary,
+          foregroundColor: AppColors.onSecondary,
+          heroTag: "location_insights",
+          child: const Icon(Icons.location_on),
+          tooltip: 'Location Insights',
+        ),
+        const SizedBox(height: 16),
+        // Original API Data Button
+        FloatingActionButton(
+          onPressed: () => _showApiDataPopup(context),
+          backgroundColor: AppColors.primary,
+          foregroundColor: AppColors.onPrimary,
+          heroTag: "api_data",
+          child: const Icon(Icons.api),
+          tooltip: 'Show API Data',
+        ),
+      ],
     );
   }
 
@@ -1065,6 +1082,470 @@ class DashboardView extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  void _fetchLocationInsights(BuildContext context) {
+    _showLocationInsightsPopup(context);
+  }
+
+  void _showLocationInsightsPopup(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+    final popupWidth = screenSize.width * 0.9;
+    final popupHeight = screenSize.height * 0.4;
+    
+    showDialog(
+      context: context,
+      barrierColor: Colors.black.withOpacity(0.5),
+      builder: (context) => Align(
+        alignment: Alignment.bottomRight,
+        child: Container(
+          margin: EdgeInsets.only(
+            right: 16.w,
+            bottom: 100.h,
+            left: 16.w,
+          ),
+          width: popupWidth,
+          height: popupHeight,
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(20.r),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.shadow.withOpacity(0.15),
+                blurRadius: 20,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              // Header
+              Container(
+                padding: EdgeInsets.all(16.w),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      AppColors.secondary.withOpacity(0.1),
+                      AppColors.secondary.withOpacity(0.05),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20.r),
+                    topRight: Radius.circular(20.r),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(8.w),
+                      decoration: BoxDecoration(
+                        color: AppColors.secondary,
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                      child: Icon(
+                        Icons.location_on,
+                        color: AppColors.onSecondary,
+                        size: 20.w,
+                      ),
+                    ),
+                    SizedBox(width: 12.w),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Location Insights',
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                          Text(
+                            'Nearby amenities and places',
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      icon: Icon(
+                        Icons.close,
+                        color: AppColors.textSecondary,
+                        size: 20.w,
+                      ),
+                      constraints: BoxConstraints(
+                        minWidth: 32.w,
+                        minHeight: 32.h,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              
+              // Content
+              Expanded(
+                child: _LocationInsightsWidget(),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _LocationInsightsWidget extends StatefulWidget {
+  @override
+  _LocationInsightsWidgetState createState() => _LocationInsightsWidgetState();
+}
+
+class _LocationInsightsWidgetState extends State<_LocationInsightsWidget> {
+  List<Map<String, dynamic>> _locationData = [];
+  bool _isLoading = false;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchLocationData();
+  }
+
+  Future<void> _fetchLocationData() async {
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
+    try {
+      // Sample coordinates (you can replace with actual current location)
+      const double latitude = 28.6139; // Delhi coordinates as example
+      const double longitude = 77.2090;
+      
+      // Define amenities to search for (same as the working example)
+      final amenities = [
+        "hospital",
+        "school", 
+        "restaurant",
+        "police",
+        "hotel",
+        "university",
+        "government"
+      ];
+
+      List<Map<String, dynamic>> results = [];
+
+      // Search for each amenity type within a bounding box
+      for (final amenity in amenities) {
+        final url = Uri.parse(
+          "https://nominatim.openstreetmap.org/search?"
+          "q=$amenity&format=json&limit=5&"
+          "viewbox=${longitude - 0.05},${latitude - 0.05},${longitude + 0.05},${latitude + 0.05}&bounded=1",
+        );
+
+        final response = await http.get(
+          url,
+          headers: {"User-Agent": "FlutterApp/1.0 (your_email@example.com)"},
+        );
+
+        if (response.statusCode == 200) {
+          final data = json.decode(response.body);
+          for (var item in data) {
+            results.add({
+              "name": item["display_name"] ?? "Unknown Location",
+              "lat": item["lat"] ?? latitude.toString(),
+              "lon": item["lon"] ?? longitude.toString(),
+              "type": amenity,
+              "class": item['class'] ?? amenity,
+              "importance": item['importance']?.toString() ?? 'N/A',
+              "place_rank": item['place_rank']?.toString() ?? 'N/A',
+              "osm_type": item['osm_type'] ?? 'unknown',
+              "osm_id": item['osm_id']?.toString() ?? 'N/A',
+              "full_address": item['display_name'] ?? 'N/A',
+            });
+          }
+        }
+      }
+        
+      setState(() {
+        _locationData = results;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _error = 'Error: $e';
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_isLoading) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.secondary),
+            ),
+            SizedBox(height: 16.h),
+            Text(
+              'Fetching location insights...',
+              style: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 14.sp,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (_error != null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.error_outline,
+              color: AppColors.error,
+              size: 48.w,
+            ),
+            SizedBox(height: 16.h),
+            Text(
+              _error!,
+              style: TextStyle(
+                color: AppColors.error,
+                fontSize: 14.sp,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 16.h),
+            ElevatedButton(
+              onPressed: _fetchLocationData,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.secondary,
+                foregroundColor: AppColors.onSecondary,
+              ),
+              child: Text('Retry'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (_locationData.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.location_off,
+              color: AppColors.textSecondary,
+              size: 48.w,
+            ),
+            SizedBox(height: 16.h),
+            Text(
+              'No location data available',
+              style: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 14.sp,
+              ),
+            ),
+            SizedBox(height: 16.h),
+            ElevatedButton(
+              onPressed: _fetchLocationData,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.secondary,
+                foregroundColor: AppColors.onSecondary,
+              ),
+              child: Text('Refresh'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Column(
+      children: [
+        // Header with count
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+          child: Row(
+            children: [
+              Text(
+                'Found ${_locationData.length} locations',
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              Spacer(),
+              IconButton(
+                onPressed: _fetchLocationData,
+                icon: Icon(
+                  Icons.refresh,
+                  color: AppColors.secondary,
+                  size: 20.w,
+                ),
+                constraints: BoxConstraints(
+                  minWidth: 32.w,
+                  minHeight: 32.h,
+                ),
+              ),
+            ],
+          ),
+        ),
+        
+        // Location list
+        Expanded(
+          child: ListView.builder(
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            itemCount: _locationData.length,
+            itemBuilder: (context, index) {
+              final location = _locationData[index];
+              return _buildLocationCard(location, index + 1);
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLocationCard(Map<String, dynamic> location, int index) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 12.h),
+      padding: EdgeInsets.all(16.w),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceContainer,
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(
+          color: AppColors.secondary.withOpacity(0.2),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Location number and type
+          Row(
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                decoration: BoxDecoration(
+                  color: AppColors.secondary,
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                child: Text(
+                  'Location #$index',
+                  style: TextStyle(
+                    color: AppColors.onSecondary,
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              Spacer(),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                decoration: BoxDecoration(
+                  color: AppColors.secondary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                child: Text(
+                  location['type'] ?? 'Unknown',
+                  style: TextStyle(
+                    color: AppColors.secondary,
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          
+          SizedBox(height: 12.h),
+          
+          // Location name (simplified display like the working example)
+          Text(
+            location['name'] ?? 'Unknown Location',
+            style: TextStyle(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w500,
+              color: AppColors.textPrimary,
+              decoration: TextDecoration.none,
+            ),
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+          ),
+          
+          SizedBox(height: 12.h),
+          
+          // Coordinates
+          _buildInfoRow(Icons.my_location, 'Coordinates', 
+            'Lat: ${location['lat']}, Lon: ${location['lon']}'),
+          
+          // Additional metadata (only if available)
+          if (location['importance'] != 'N/A')
+            _buildInfoRow(Icons.star, 'Importance', location['importance']),
+          
+          if (location['osm_type'] != 'unknown')
+            _buildInfoRow(Icons.map, 'OSM Type', '${location['osm_type']} (${location['osm_id']})'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(IconData icon, String label, String value) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 8.h),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            icon,
+            size: 16.w,
+            color: AppColors.secondary,
+          ),
+          SizedBox(width: 8.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 11.sp,
+                    color: AppColors.textSecondary,
+                    fontWeight: FontWeight.w500,
+                    decoration: TextDecoration.none,
+                  ),
+                ),
+                SizedBox(height: 2.h),
+                Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    color: AppColors.textPrimary,
+                    decoration: TextDecoration.none,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -20,19 +20,22 @@ class EnhancedDashboardScreen extends StatefulWidget {
   const EnhancedDashboardScreen({super.key});
 
   @override
-  State<EnhancedDashboardScreen> createState() => _EnhancedDashboardScreenState();
+  State<EnhancedDashboardScreen> createState() =>
+      _EnhancedDashboardScreenState();
 }
 
 class _EnhancedDashboardScreenState extends State<EnhancedDashboardScreen>
     with TickerProviderStateMixin {
   late TabController _tabController;
-  
+
   // Services
   final _enhancedLocationService = GetIt.instance<EnhancedLocationService>();
-  final _enhancedTripDetectionService = GetIt.instance<EnhancedTripDetectionService>();
+  final _enhancedTripDetectionService =
+      GetIt.instance<EnhancedTripDetectionService>();
   final _motionDetectionService = GetIt.instance<MotionDetectionService>();
   final _sensorFusionService = GetIt.instance<SensorFusionService>();
-  final _performanceLoggingService = GetIt.instance<PerformanceLoggingService>();
+  final _performanceLoggingService =
+      GetIt.instance<PerformanceLoggingService>();
   final _configurationService = GetIt.instance<LocationConfigurationService>();
 
   @override
@@ -91,22 +94,10 @@ class _EnhancedDashboardScreenState extends State<EnhancedDashboardScreen>
           labelColor: Colors.black,
           unselectedLabelColor: Colors.black.withOpacity(0.7),
           tabs: const [
-            Tab(
-              icon: Icon(Icons.location_on),
-              text: 'Location',
-            ),
-            Tab(
-              icon: Icon(Icons.route),
-              text: 'Trips',
-            ),
-            Tab(
-              icon: Icon(Icons.analytics),
-              text: 'Analytics',
-            ),
-            Tab(
-              icon: Icon(Icons.settings),
-              text: 'Config',
-            ),
+            Tab(icon: Icon(Icons.location_on), text: 'Location'),
+            Tab(icon: Icon(Icons.route), text: 'Trips'),
+            Tab(icon: Icon(Icons.analytics), text: 'Analytics'),
+            Tab(icon: Icon(Icons.settings), text: 'Config'),
           ],
         ),
       ),
@@ -135,13 +126,11 @@ class _EnhancedDashboardScreenState extends State<EnhancedDashboardScreen>
             sensorFusionService: _sensorFusionService,
           ),
           const SizedBox(height: 16),
-          
+
           // Motion Detection Card
-          MotionDetectionCard(
-            motionDetectionService: _motionDetectionService,
-          ),
+          MotionDetectionCard(motionDetectionService: _motionDetectionService),
           const SizedBox(height: 16),
-          
+
           // Real-time Status Card
           _buildStatusCard(),
         ],
@@ -160,11 +149,11 @@ class _EnhancedDashboardScreenState extends State<EnhancedDashboardScreen>
             tripDetectionService: _enhancedTripDetectionService,
           ),
           const SizedBox(height: 16),
-          
+
           // Trip History Card
           _buildTripHistoryCard(),
           const SizedBox(height: 16),
-          
+
           // Trip Predictions Card
           _buildTripPredictionsCard(),
         ],
@@ -183,11 +172,11 @@ class _EnhancedDashboardScreenState extends State<EnhancedDashboardScreen>
             performanceLoggingService: _performanceLoggingService,
           ),
           const SizedBox(height: 16),
-          
+
           // Accuracy Analytics Card
           _buildAccuracyAnalyticsCard(),
           const SizedBox(height: 16),
-          
+
           // Battery Usage Card
           _buildBatteryUsageCard(),
         ],
@@ -201,7 +190,8 @@ class _EnhancedDashboardScreenState extends State<EnhancedDashboardScreen>
       child: Column(
         children: [
           ConfigurationPanel(
-            configurationService: GetIt.instance<LocationConfigurationService>(),
+            configurationService:
+                GetIt.instance<LocationConfigurationService>(),
           ),
         ],
       ),
@@ -239,15 +229,33 @@ class _EnhancedDashboardScreenState extends State<EnhancedDashboardScreen>
                   final data = snapshot.data!;
                   return Column(
                     children: [
-                      _buildStatusRow('Location Source', data.source.toString()),
-                      _buildStatusRow('Accuracy', '${data.position.accuracy.toStringAsFixed(1)}m'),
-                      _buildStatusRow('Confidence', '${(data.confidence * 100).toStringAsFixed(1)}%'),
-                      _buildStatusRow('Battery Optimized', data.batteryOptimized ? 'Yes' : 'No'),
-                      _buildStatusRow('Speed', '${data.position.speed.toStringAsFixed(1)} m/s'),
+                      _buildStatusRow(
+                        'Location Source',
+                        data.source.toString(),
+                      ),
+                      _buildStatusRow(
+                        'Accuracy',
+                        '${data.position.accuracy.toStringAsFixed(1)}m',
+                      ),
+                      _buildStatusRow(
+                        'Confidence',
+                        '${(data.confidence * 100).toStringAsFixed(1)}%',
+                      ),
+                      _buildStatusRow(
+                        'Battery Optimized',
+                        data.batteryOptimized ? 'Yes' : 'No',
+                      ),
+                      _buildStatusRow(
+                        'Speed',
+                        '${data.position.speed.toStringAsFixed(1)} m/s',
+                      ),
                     ],
                   );
                 } else {
-                  return const Text('No location data available', style: TextStyle(color: Colors.black));
+                  return const Text(
+                    'No location data available',
+                    style: TextStyle(color: Colors.black),
+                  );
                 }
               },
             ),
@@ -287,13 +295,12 @@ class _EnhancedDashboardScreenState extends State<EnhancedDashboardScreen>
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   final trip = snapshot.data!;
-                  return Column(
-                    children: [
-                      _buildTripSummary(trip),
-                    ],
-                  );
+                  return Column(children: [_buildTripSummary(trip)]);
                 } else {
-                  return const Text('No recent trips', style: TextStyle(color: Colors.black));
+                  return const Text(
+                    'No recent trips',
+                    style: TextStyle(color: Colors.black),
+                  );
                 }
               },
             ),
@@ -335,14 +342,29 @@ class _EnhancedDashboardScreenState extends State<EnhancedDashboardScreen>
                   final prediction = snapshot.data!;
                   return Column(
                     children: [
-                      _buildStatusRow('Trip Probability', '${(prediction.tripProbability * 100).toStringAsFixed(1)}%'),
-                      _buildStatusRow('Predicted State', prediction.predictedState.toString()),
-                      _buildStatusRow('Transport Mode', prediction.predictedMode.toString()),
-                      _buildStatusRow('Confidence', '${(prediction.confidence * 100).toStringAsFixed(1)}%'),
+                      _buildStatusRow(
+                        'Trip Probability',
+                        '${(prediction.tripProbability * 100).toStringAsFixed(1)}%',
+                      ),
+                      _buildStatusRow(
+                        'Predicted State',
+                        prediction.predictedState.toString(),
+                      ),
+                      _buildStatusRow(
+                        'Transport Mode',
+                        prediction.predictedMode.toString(),
+                      ),
+                      _buildStatusRow(
+                        'Confidence',
+                        '${(prediction.confidence * 100).toStringAsFixed(1)}%',
+                      ),
                     ],
                   );
                 } else {
-                  return const Text('No predictions available', style: TextStyle(color: Colors.black));
+                  return const Text(
+                    'No predictions available',
+                    style: TextStyle(color: Colors.black),
+                  );
                 }
               },
             ),
@@ -378,16 +400,30 @@ class _EnhancedDashboardScreenState extends State<EnhancedDashboardScreen>
             ),
             const SizedBox(height: 16),
             FutureBuilder<PerformanceSessionSummary>(
-              future: Future.value(_performanceLoggingService.getSessionSummary()),
+              future: Future.value(
+                _performanceLoggingService.getSessionSummary(),
+              ),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   final summary = snapshot.data!;
                   return Column(
                     children: [
-                      _buildStatusRow('Avg Accuracy', '${summary.averageLocationAccuracy.toStringAsFixed(1)}m'),
-                      _buildStatusRow('Accuracy Std Dev', '${summary.locationAccuracyStdDev.toStringAsFixed(1)}m'),
-                      _buildStatusRow('Avg Confidence', '${(summary.averageConfidence * 100).toStringAsFixed(1)}%'),
-                      _buildStatusRow('Total Updates', '${summary.totalLocationUpdates}'),
+                      _buildStatusRow(
+                        'Avg Accuracy',
+                        '${summary.averageLocationAccuracy.toStringAsFixed(1)}m',
+                      ),
+                      _buildStatusRow(
+                        'Accuracy Std Dev',
+                        '${summary.locationAccuracyStdDev.toStringAsFixed(1)}m',
+                      ),
+                      _buildStatusRow(
+                        'Avg Confidence',
+                        '${(summary.averageConfidence * 100).toStringAsFixed(1)}%',
+                      ),
+                      _buildStatusRow(
+                        'Total Updates',
+                        '${summary.totalLocationUpdates}',
+                      ),
                     ],
                   );
                 } else {
@@ -427,16 +463,30 @@ class _EnhancedDashboardScreenState extends State<EnhancedDashboardScreen>
             ),
             const SizedBox(height: 16),
             FutureBuilder<PerformanceSessionSummary>(
-              future: Future.value(_performanceLoggingService.getSessionSummary()),
+              future: Future.value(
+                _performanceLoggingService.getSessionSummary(),
+              ),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   final summary = snapshot.data!;
                   return Column(
                     children: [
-                      _buildStatusRow('Consumption Rate', '${summary.batteryConsumptionRate.toStringAsFixed(2)}%/h'),
-                      _buildStatusRow('Total Consumed', '${summary.totalBatteryConsumed.toStringAsFixed(1)}%'),
-                      _buildStatusRow('Session Duration', '${summary.sessionDuration.inMinutes}min'),
-                      _buildStatusRow('Performance Score', '${(summary.systemPerformanceScore * 100).toStringAsFixed(1)}%'),
+                      _buildStatusRow(
+                        'Consumption Rate',
+                        '${summary.batteryConsumptionRate.toStringAsFixed(2)}%/h',
+                      ),
+                      _buildStatusRow(
+                        'Total Consumed',
+                        '${summary.totalBatteryConsumed.toStringAsFixed(1)}%',
+                      ),
+                      _buildStatusRow(
+                        'Session Duration',
+                        '${summary.sessionDuration.inMinutes}min',
+                      ),
+                      _buildStatusRow(
+                        'Performance Score',
+                        '${(summary.systemPerformanceScore * 100).toStringAsFixed(1)}%',
+                      ),
                     ],
                   );
                 } else {
@@ -482,30 +532,60 @@ class _EnhancedDashboardScreenState extends State<EnhancedDashboardScreen>
                   return Column(
                     children: [
                       SwitchListTile(
-                        title: const Text('Data Collection', style: TextStyle(color: Colors.black)),
-                        subtitle: const Text('Allow collection of location data', style: TextStyle(color: Colors.black)),
+                        title: const Text(
+                          'Data Collection',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        subtitle: const Text(
+                          'Allow collection of location data',
+                          style: TextStyle(color: Colors.black),
+                        ),
                         value: settings.enableDataCollection,
                         onChanged: (value) {
-                          final newSettings = settings.copyWith(enableDataCollection: value);
-                          _configurationService.updatePrivacySettings(newSettings);
+                          final newSettings = settings.copyWith(
+                            enableDataCollection: value,
+                          );
+                          _configurationService.updatePrivacySettings(
+                            newSettings,
+                          );
                         },
                       ),
                       SwitchListTile(
-                        title: const Text('Location Sharing', style: TextStyle(color: Colors.black)),
-                        subtitle: const Text('Share location data with services', style: TextStyle(color: Colors.black)),
+                        title: const Text(
+                          'Location Sharing',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        subtitle: const Text(
+                          'Share location data with services',
+                          style: TextStyle(color: Colors.black),
+                        ),
                         value: settings.enableLocationSharing,
                         onChanged: (value) {
-                          final newSettings = settings.copyWith(enableLocationSharing: value);
-                          _configurationService.updatePrivacySettings(newSettings);
+                          final newSettings = settings.copyWith(
+                            enableLocationSharing: value,
+                          );
+                          _configurationService.updatePrivacySettings(
+                            newSettings,
+                          );
                         },
                       ),
                       SwitchListTile(
-                        title: const Text('Analytics', style: TextStyle(color: Colors.black)),
-                        subtitle: const Text('Enable usage analytics', style: TextStyle(color: Colors.black)),
+                        title: const Text(
+                          'Analytics',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        subtitle: const Text(
+                          'Enable usage analytics',
+                          style: TextStyle(color: Colors.black),
+                        ),
                         value: settings.enableAnalytics,
                         onChanged: (value) {
-                          final newSettings = settings.copyWith(enableAnalytics: value);
-                          _configurationService.updatePrivacySettings(newSettings);
+                          final newSettings = settings.copyWith(
+                            enableAnalytics: value,
+                          );
+                          _configurationService.updatePrivacySettings(
+                            newSettings,
+                          );
                         },
                       ),
                     ],
@@ -582,9 +662,9 @@ class _EnhancedDashboardScreenState extends State<EnhancedDashboardScreen>
         children: [
           Text(
             label,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.black,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: Colors.black),
           ),
           Text(
             value,
@@ -602,11 +682,20 @@ class _EnhancedDashboardScreenState extends State<EnhancedDashboardScreen>
     return Column(
       children: [
         _buildStatusRow('Trip ID', trip.id),
-        _buildStatusRow('Distance', '${trip.totalDistance.toStringAsFixed(0)}m'),
+        _buildStatusRow(
+          'Distance',
+          '${trip.totalDistance.toStringAsFixed(0)}m',
+        ),
         _buildStatusRow('Duration', '${trip.duration.inMinutes}min'),
-        _buildStatusRow('Avg Speed', '${trip.averageSpeed.toStringAsFixed(1)} m/s'),
+        _buildStatusRow(
+          'Avg Speed',
+          '${trip.averageSpeed.toStringAsFixed(1)} m/s',
+        ),
         _buildStatusRow('Transport Mode', trip.transportMode.toString()),
-        _buildStatusRow('Quality Score', '${(trip.qualityScore * 100).toStringAsFixed(1)}%'),
+        _buildStatusRow(
+          'Quality Score',
+          '${(trip.qualityScore * 100).toStringAsFixed(1)}%',
+        ),
       ],
     );
   }
@@ -620,9 +709,8 @@ class _EnhancedDashboardScreenState extends State<EnhancedDashboardScreen>
           onPressed: isTracking ? _stopTracking : _startTracking,
           icon: Icon(isTracking ? Icons.stop : Icons.play_arrow),
           label: Text(isTracking ? 'Stop Tracking' : 'Start Tracking'),
-          backgroundColor: isTracking 
-              ? Colors.red 
-              : Theme.of(context).colorScheme.primary,
+          backgroundColor:
+              isTracking ? Colors.red : Theme.of(context).colorScheme.primary,
         );
       },
     );
@@ -631,13 +719,15 @@ class _EnhancedDashboardScreenState extends State<EnhancedDashboardScreen>
   Future<void> _startTracking() async {
     try {
       // Start enhanced location tracking
-      final locationResult = await _enhancedLocationService.startEnhancedTracking();
+      final locationResult =
+          await _enhancedLocationService.startEnhancedTracking();
       if (locationResult.isLeft()) {
         throw Exception('Failed to start location tracking');
       }
 
       // Start enhanced trip detection
-      final tripResult = await _enhancedTripDetectionService.startEnhancedTripDetection();
+      final tripResult =
+          await _enhancedTripDetectionService.startEnhancedTripDetection();
       if (tripResult.isLeft()) {
         throw Exception('Failed to start trip detection');
       }
@@ -690,7 +780,7 @@ class _EnhancedDashboardScreenState extends State<EnhancedDashboardScreen>
   Future<void> _exportData() async {
     try {
       final data = await _performanceLoggingService.exportPerformanceData();
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
