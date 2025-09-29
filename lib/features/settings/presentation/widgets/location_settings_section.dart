@@ -54,24 +54,17 @@ class LocationSettingsSection extends StatelessWidget {
                   items: LocationAccuracy.values.map((accuracy) {
                     return DropdownMenuItem(
                       value: accuracy.value,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            accuracy.displayName,
-                            style: AppTextStyles.bodyMedium.copyWith(
-                              color: AppColors.textPrimary,
-                              fontWeight: FontWeight.w500,
-                            ),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Text(
+                          '${accuracy.displayName} - ${accuracy.description}',
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            color: AppColors.textPrimary,
+                            fontWeight: FontWeight.w500,
                           ),
-                          Text(
-                            accuracy.description,
-                            style: AppTextStyles.bodySmall.copyWith(
-                              color: AppColors.textSecondary,
-                            ),
-                          ),
-                        ],
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
                       ),
                     );
                   }).toList(),
@@ -98,24 +91,17 @@ class LocationSettingsSection extends StatelessWidget {
                   items: DataRetentionPeriod.values.map((period) {
                     return DropdownMenuItem(
                       value: period.value,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            period.displayName,
-                            style: AppTextStyles.bodyMedium.copyWith(
-                              color: AppColors.textPrimary,
-                              fontWeight: FontWeight.w500,
-                            ),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Text(
+                          '${period.displayName} - ${period.description}',
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            color: AppColors.textPrimary,
+                            fontWeight: FontWeight.w500,
                           ),
-                          Text(
-                            period.description,
-                            style: AppTextStyles.bodySmall.copyWith(
-                              color: AppColors.textSecondary,
-                            ),
-                          ),
-                        ],
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
                       ),
                     );
                   }).toList(),
@@ -199,6 +185,7 @@ class LocationSettingsSection extends StatelessWidget {
           value: value,
           items: items,
           onChanged: enabled ? onChanged : null,
+          isExpanded: true,
           decoration: InputDecoration(
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),

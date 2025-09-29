@@ -1,6 +1,11 @@
 import 'package:injectable/injectable.dart';
+import 'package:dio/dio.dart';
 
 import '../../../../core/error/exceptions.dart';
+import '../../../../core/network/api_service.dart';
+import '../../../../core/network/endpoints.dart';
+import '../../../../core/constants/app_constants.dart';
+import '../../../../core/utils/error_handler.dart';
 import '../../domain/entities/privacy_settings.dart';
 
 abstract class SettingsRemoteDataSource {
@@ -10,53 +15,43 @@ abstract class SettingsRemoteDataSource {
 
 @LazySingleton(as: SettingsRemoteDataSource)
 class SettingsRemoteDataSourceImpl implements SettingsRemoteDataSource {
-  // In a real app, you would inject an HTTP client here
-  // final Dio dio;
+  final ApiService _apiService;
 
-  SettingsRemoteDataSourceImpl();
+  SettingsRemoteDataSourceImpl(this._apiService);
 
   @override
   Future<void> updatePrivacySettings(PrivacySettings settings) async {
-    try {
-      // TODO: Implement API call to sync privacy settings
-      // Example:
-      // final response = await dio.put('/api/user/privacy-settings', data: {
-      //   'location_consent': settings.locationConsent,
-      //   'background_location_consent': settings.backgroundLocationConsent,
-      //   'data_sharing_consent': settings.dataSharingConsent,
-      //   'analytics_consent': settings.analyticsConsent,
-      //   'location_accuracy': settings.locationAccuracy,
-      //   'data_retention_period': settings.dataRetentionPeriod,
-      // });
-      // 
-      // if (response.statusCode != 200) {
-      //   throw ServerException();
-      // }
-      
-      // For now, simulate a successful API call
-      await Future.delayed(const Duration(milliseconds: 500));
-    } catch (e) {
-      throw const ServerException('Failed to get privacy settings from server');
-    }
+    return handleApiCall(() async {
+      final response = await _apiService.put(
+        ApiEndpoints.updateUserSettings,
+        data: {
+          'userId': AppConstants.userId,
+          'location_consent': settings.locationConsent,
+          'background_location_consent': settings.backgroundLocationConsent,
+          'data_sharing_consent': settings.dataSharingConsent,
+          'analytics_consent': settings.analyticsConsent,
+          'location_accuracy': settings.locationAccuracy.value,
+          'data_retention_period': settings.dataRetentionPeriod,
+        },
+      );
+
+      if (response.statusCode != 200) {
+        throw const ServerException('Failed to update privacy settings');
+      }
+    });
   }
 
   @override
   Future<void> deleteUserData({required bool deleteAll}) async {
-    try {
-      // TODO: Implement API call to delete user data
-      // Example:
-      // final response = await dio.delete('/api/user/data', queryParameters: {
-      //   'delete_all': deleteAll,
-      // });
-      // 
-      // if (response.statusCode != 200) {
-      //   throw ServerException();
-      // }
-      
-      // For now, simulate a successful API call
-      await Future.delayed(const Duration(milliseconds: 500));
-    } catch (e) {
-      throw const ServerException('Failed to save privacy settings to server');
-    }
+    return handleApiCall(() async {
+      final response = await _apiService.delete(
+        ApiEndpoints.deleteUserData,
+        queryParameters: {'delete_all': deleteAll.toString()},
+      );
+
+      if (response.statusCode != 200) {
+        throw const ServerException('Failed to delete user data');
+      }
+    });
   }
 }

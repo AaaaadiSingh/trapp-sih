@@ -3,15 +3,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:sih/features/dashboard/data/models/dashboard_model.dart';
 
 import '../../domain/entities/dashboard_data.dart';
 import '../../../../core/services/location_service.dart';
 import '../../../../core/services/trip_detection_service.dart';
 import '../../../../core/services/trip_logging_service.dart';
+import '../../domain/usecases/get_dashboard_stats.dart';
+import '../../../../core/usecases/usecase.dart';
 // DetectedTrip, TripLog, and TripStatistics are imported from services
 // DetectedTrip from trip_detection_service.dart
 // TripLog and TripStatistics from trip_logging_service.dart
-
 
 part 'dashboard_bloc.freezed.dart';
 part 'dashboard_event.dart';
@@ -22,6 +24,10 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   final LocationService _locationService;
   final TripDetectionService _tripDetectionService;
   final TripLoggingService _tripLoggingService;
+  final GetDashboardStats _getDashboardStats;
+  final GetDashboardSummary _getDashboardSummary;
+  final GetWeeklyStats _getWeeklyStats;
+  final GetRecentTrips _getRecentTrips;
   StreamSubscription<Position>? _locationSubscription;
   StreamSubscription<DetectedTrip>? _tripSubscription;
   StreamSubscription<TripEvent>? _tripEventSubscription;
@@ -31,6 +37,10 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     this._locationService,
     this._tripDetectionService,
     this._tripLoggingService,
+    this._getDashboardStats,
+    this._getDashboardSummary,
+    this._getWeeklyStats,
+    this._getRecentTrips,
   ) : super(const DashboardState()) {
     print('🏗️ DashboardBloc constructor called');
     on<TabChanged>(_onTabChanged);
@@ -42,7 +52,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     on<StopTripDetection>(_onStopTripDetection);
     on<TripDetected>(_onTripDetected);
     on<TripLogged>(_onTripLogged);
-    
+
     // Listen to location updates
     _locationService.locationStream.listen((position) {
       add(DashboardEvent.locationUpdated(position));
@@ -63,50 +73,96 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     try {
       // Auto-start location tracking and trip detection
       await _initializeLocationServices();
-      
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 1));
 
-      // Mock data
-      final dashboardData = DashboardData(
-        totalTrips: _tripDetectionService.totalTrips,
-        estimatedDistance: 12.5,
-        estimatedTravelTime: 38,
-        currentTrips: [
-          TripData(
-            id: '1',
-            origin: 'Home',
-            destination: 'Office',
-            startTime: DateTime(2023, 1, 1, 8, 5),
-            endTime: DateTime(2023, 1, 1, 8, 34),
-            status: TripStatus.inProgress,
-            distance: 5.2,
-            duration: 29,
-          ),
-          TripData(
-            id: '2',
-            origin: 'Office',
-            destination: 'Fitness Center',
-            startTime: DateTime(2023, 1, 1, 19, 10),
-            endTime: DateTime(2023, 1, 1, 19, 30),
-            status: TripStatus.scheduled,
-            distance: 7.3,
-            duration: 20,
-          ),
-        ],
+      // Fetch dashboard data from API
+      final statsResult = await _getDashboardStats(NoParams());
+      final summaryResult = await _getDashboardSummary(NoParams());
+      final recentTripsResult = await _getRecentTrips(
+        GetRecentTripsParams(limit: 5),
       );
 
-      emit(state.copyWith(
-        isLoading: false,
-        dashboardData: dashboardData,
-        isLocationTracking: _locationService.isTracking,
-        isTripDetectionActive: _tripDetectionService.isDetecting,
-      ));
+      // Handle API results
+      final stats = statsResult.fold((failure) {
+        print('❌ Failed to fetch dashboard stats: ${failure.message}');
+        return null;
+      }, (data) => data);
+
+      final summary = summaryResult.fold((failure) {
+        print('❌ Failed to fetch dashboard summary: ${failure.message}');
+        return null;
+      }, (data) => data);
+
+      final recentTrips = recentTripsResult.fold((failure) {
+        print('❌ Failed to fetch recent trips: ${failure.message}');
+        return <TripSummary>[];
+      }, (data) => data);
+
+      // Convert API data to local models or use fallback mock data
+      final dashboardData = DashboardData(
+        totalTrips: stats?.totalTrips ?? _tripDetectionService.totalTrips,
+        estimatedDistance: stats?.totalDistance ?? 12.5,
+        estimatedTravelTime: (stats?.totalDuration ?? 38).toInt(),
+        currentTrips:
+            recentTrips.isNotEmpty
+                ? recentTrips
+                    .map(
+                      (trip) => TripData(
+                        id: trip.id,
+                        origin: trip.origin,
+                        destination: trip.destination,
+                        startTime: trip.startTime,
+                        endTime: trip.endTime,
+                        status:
+                            TripStatus
+                                .completed, // Map from API status if needed
+                        distance: trip.distance,
+                        duration: trip.duration.toInt(),
+                      ),
+                    )
+                    .toList()
+                : [
+                  TripData(
+                    id: '1',
+                    origin: 'Home',
+                    destination: 'Office',
+                    startTime: DateTime(2023, 1, 1, 8, 5),
+                    endTime: DateTime(2023, 1, 1, 8, 34),
+                    status: TripStatus.inProgress,
+                    distance: 5.2,
+                    duration: 29,
+                  ),
+                  TripData(
+                    id: '2',
+                    origin: 'Office',
+                    destination: 'Fitness Center',
+                    startTime: DateTime(2023, 1, 1, 19, 10),
+                    endTime: DateTime(2023, 1, 1, 19, 30),
+                    status: TripStatus.scheduled,
+                    distance: 7.3,
+                    duration: 20,
+                  ),
+                ],
+      );
+
+      print('✅ Dashboard data loaded successfully');
+      if (stats != null)
+        print(
+          '📊 API Stats: ${stats.totalTrips} trips, ${stats.totalDistance}km',
+        );
+      if (summary != null)
+        print('📋 API Summary: ${summary.weeklyTrips} weekly trips');
+      print('🚗 Recent trips: ${recentTrips.length} trips loaded');
+
+      emit(
+        state.copyWith(
+          isLoading: false,
+          dashboardData: dashboardData,
+          isLocationTracking: _locationService.isTracking,
+          isTripDetectionActive: _tripDetectionService.isDetecting,
+        ),
+      );
     } catch (e) {
-      emit(state.copyWith(
-        isLoading: false,
-        error: e.toString(),
-      ));
+      emit(state.copyWith(isLoading: false, error: e.toString()));
     }
   }
 
@@ -114,42 +170,45 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   Future<void> _initializeLocationServices() async {
     try {
       print('🚀 Starting location services initialization...');
-      
+
       // Check location service status
       print('📍 Location tracking status: ${_locationService.isTracking}');
       print('🔍 Trip detection status: ${_tripDetectionService.isDetecting}');
-      
+
       // Start location tracking if not already started
       if (!_locationService.isTracking) {
         print('📍 Starting location tracking...');
         final locationResult = await _locationService.startLocationTracking();
         locationResult.fold(
-          (failure) => print('❌ Failed to start location tracking: ${failure.message}'),
+          (failure) =>
+              print('❌ Failed to start location tracking: ${failure.message}'),
           (_) => print('✅ Location tracking started successfully'),
         );
       } else {
         print('📍 Location tracking already active');
       }
-      
+
       // Start trip detection if not already started
       if (!_tripDetectionService.isDetecting) {
         print('🔍 Starting trip detection...');
         final tripResult = await _tripDetectionService.startTripDetection();
         tripResult.fold(
-          (failure) => print('❌ Failed to start trip detection: ${failure.message}'),
+          (failure) =>
+              print('❌ Failed to start trip detection: ${failure.message}'),
           (_) => print('✅ Trip detection started successfully'),
         );
       } else {
         print('🔍 Trip detection already active');
       }
-      
+
       // Start trip logging if not already started
-      final loggingResult = await _tripLoggingService.startLogging(_tripDetectionService);
+      final loggingResult = await _tripLoggingService.startLogging(
+        _tripDetectionService,
+      );
       loggingResult.fold(
         (failure) => print('Failed to start trip logging: ${failure.message}'),
         (_) => print('Trip logging started successfully'),
       );
-      
     } catch (e) {
       print('Error initializing location services: $e');
     }
@@ -174,22 +233,21 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     emit(state.copyWith(isLocationTracking: false));
   }
 
-  void _onLocationUpdated(
-    LocationUpdated event,
-    Emitter<DashboardState> emit,
-  ) {
+  void _onLocationUpdated(LocationUpdated event, Emitter<DashboardState> emit) {
     final updatedHistory = List<Position>.from(state.locationHistory);
     updatedHistory.add(event.position);
-    
+
     // Keep only last 100 positions to avoid memory issues
     if (updatedHistory.length > 100) {
       updatedHistory.removeAt(0);
     }
-    
-    emit(state.copyWith(
-      currentLocation: event.position,
-      locationHistory: updatedHistory,
-    ));
+
+    emit(
+      state.copyWith(
+        currentLocation: event.position,
+        locationHistory: updatedHistory,
+      ),
+    );
   }
 
   Future<void> _onStartTripDetection(
@@ -203,27 +261,26 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
 
       // Start trip detection service
       final result = await _tripDetectionService.startTripDetection();
-      
+
       result.fold(
         (failure) {
-          emit(state.copyWith(
-            error: 'Failed to start trip detection: ${failure.message}',
-          ));
+          emit(
+            state.copyWith(
+              error: 'Failed to start trip detection: ${failure.message}',
+            ),
+          );
         },
         (_) {
-          emit(state.copyWith(
-            isTripDetectionActive: true,
-            error: null,
-          ));
-          
+          emit(state.copyWith(isTripDetectionActive: true, error: null));
+
           // Start trip logging
           _tripLoggingService.startLogging(_tripDetectionService);
-          
+
           // Listen to trip events
           _tripSubscription = _tripDetectionService.tripStream.listen(
             (trip) => add(DashboardEvent.tripDetected(trip)),
           );
-          
+
           // Listen to trip event stream for real-time updates
           _tripEventSubscription = _tripDetectionService.tripEventStream.listen(
             (event) {
@@ -233,7 +290,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
               }
             },
           );
-          
+
           // Listen to trip log events
           _tripLogSubscription = _tripLoggingService.tripLogStream.listen(
             (tripLog) => add(DashboardEvent.tripLogged(tripLog)),
@@ -241,9 +298,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
         },
       );
     } catch (e) {
-      emit(state.copyWith(
-        error: 'Error starting trip detection: $e',
-      ));
+      emit(state.copyWith(error: 'Error starting trip detection: $e'));
     }
   }
 
@@ -259,22 +314,22 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       // Stop services
       await _tripDetectionService.stopTripDetection();
       await _tripLoggingService.stopLogging();
-      
+
       // Cancel subscriptions
       await _tripSubscription?.cancel();
       await _tripLogSubscription?.cancel();
       _tripSubscription = null;
       _tripLogSubscription = null;
 
-      emit(state.copyWith(
-        isTripDetectionActive: false,
-        currentTrip: null,
-        error: null,
-      ));
+      emit(
+        state.copyWith(
+          isTripDetectionActive: false,
+          currentTrip: null,
+          error: null,
+        ),
+      );
     } catch (e) {
-      emit(state.copyWith(
-        error: 'Error stopping trip detection: $e',
-      ));
+      emit(state.copyWith(error: 'Error stopping trip detection: $e'));
     }
   }
 
@@ -283,14 +338,9 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     Emitter<DashboardState> emit,
   ) async {
     try {
-      emit(state.copyWith(
-        currentTrip: event.trip,
-        error: null,
-      ));
+      emit(state.copyWith(currentTrip: event.trip, error: null));
     } catch (e) {
-      emit(state.copyWith(
-        error: 'Error processing detected trip: $e',
-      ));
+      emit(state.copyWith(error: 'Error processing detected trip: $e'));
     }
   }
 
@@ -304,20 +354,20 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       if (updatedRecentTrips.length > 10) {
         updatedRecentTrips.removeRange(10, updatedRecentTrips.length);
       }
-      
+
       // Update trip statistics
       final statistics = await _tripLoggingService.getTripStatistics();
-      
-      emit(state.copyWith(
-        recentTrips: updatedRecentTrips,
-        tripStatistics: statistics,
-        currentTrip: null, // Clear current trip when logged
-        error: null,
-      ));
+
+      emit(
+        state.copyWith(
+          recentTrips: updatedRecentTrips,
+          tripStatistics: statistics,
+          currentTrip: null, // Clear current trip when logged
+          error: null,
+        ),
+      );
     } catch (e) {
-      emit(state.copyWith(
-        error: 'Error processing logged trip: $e',
-      ));
+      emit(state.copyWith(error: 'Error processing logged trip: $e'));
     }
   }
 

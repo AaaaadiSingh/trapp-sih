@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import 'core/constants/app_constants.dart';
-import 'core/di/injection_container.dart';
+import 'core/di/injection.dart';
 import 'core/theme/app_theme.dart';
 import 'core/routing/app_router.dart';
 

@@ -5,12 +5,16 @@ class AppConstants {
   static const String appVersion = '1.0.0';
 
   // API Configuration
-  static const String baseUrl = 'https://api.natpac.gov.in';
+  static const String baseUrl = 'https://trapp-sih-backend.onrender.com/api/';
   static const Duration requestTimeout = Duration(seconds: 30);
+
+  // User Configuration
+  static const String userId = '68c20e29997752172d4bd2ee';
 
   // Storage Keys
   static const String userProfileKey = 'user_profile';
   static const String onboardingCompletedKey = 'onboarding_completed';
+  static const String userIdKey = 'user_id';
 
   // Validation
   static const int minAge = 13;

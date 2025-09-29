@@ -13,6 +13,14 @@ import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
+import '../../features/dashboard/data/datasources/dashboard_remote_data_source.dart'
+    as _i258;
+import '../../features/dashboard/data/repositories/dashboard_repository_impl.dart'
+    as _i509;
+import '../../features/dashboard/domain/repositories/dashboard_repository.dart'
+    as _i665;
+import '../../features/dashboard/domain/usecases/get_dashboard_stats.dart'
+    as _i993;
 import '../../features/dashboard/presentation/bloc/dashboard_bloc.dart'
     as _i652;
 import '../../features/dashboard/presentation/bloc/survey_bloc.dart' as _i79;
@@ -41,8 +49,14 @@ import '../../features/settings/domain/usecases/get_privacy_settings.dart'
 import '../../features/settings/domain/usecases/update_privacy_settings.dart'
     as _i813;
 import '../../features/settings/presentation/bloc/settings_bloc.dart' as _i585;
+import '../../features/travel_preferences/data/datasources/travel_preferences_remote_data_source.dart'
+    as _i1045;
+import '../../features/trips/data/datasources/trips_remote_data_source.dart'
+    as _i832;
+import '../network/api_service.dart' as _i921;
 import '../services/location_service.dart' as _i669;
 import '../services/notification_service.dart' as _i941;
+import '../services/secure_storage_service.dart' as _i535;
 import '../services/trip_detection_service.dart' as _i33;
 import '../services/trip_logging_service.dart' as _i521;
 import 'injection.dart' as _i464;
@@ -73,6 +87,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.singleton<_i669.LocationService>(() => _i669.LocationService());
     gh.singleton<_i941.NotificationService>(() => _i941.NotificationService());
+    gh.singleton<_i535.SecureStorageService>(
+      () => _i535.SecureStorageService(),
+    );
     gh.singleton<_i521.TripLoggingService>(() => _i521.TripLoggingService());
     gh.singleton<_i33.TripDetectionService>(
       () => _i33.TripDetectionService(
@@ -80,26 +97,36 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i941.NotificationService>(),
       ),
     );
-    gh.lazySingleton<_i188.SettingsRemoteDataSource>(
-      () => _i188.SettingsRemoteDataSourceImpl(),
-    );
     gh.lazySingleton<_i599.SettingsLocalDataSource>(
       () => _i599.SettingsLocalDataSourceImpl(
         sharedPreferences: gh<_i460.SharedPreferences>(),
       ),
     );
-    gh.factory<_i652.DashboardBloc>(
-      () => _i652.DashboardBloc(
-        gh<_i669.LocationService>(),
-        gh<_i33.TripDetectionService>(),
-        gh<_i521.TripLoggingService>(),
-      ),
+    gh.singleton<_i921.ApiService>(
+      () => _i921.ApiService(gh<_i535.SecureStorageService>()),
+    );
+    gh.lazySingleton<_i832.TripsRemoteDataSource>(
+      () => _i832.TripsRemoteDataSourceImpl(gh<_i921.ApiService>()),
+    );
+    gh.lazySingleton<_i188.SettingsRemoteDataSource>(
+      () => _i188.SettingsRemoteDataSourceImpl(gh<_i921.ApiService>()),
+    );
+    gh.lazySingleton<_i1045.TravelPreferencesRemoteDataSource>(
+      () =>
+          _i1045.TravelPreferencesRemoteDataSourceImpl(gh<_i921.ApiService>()),
+    );
+    gh.lazySingleton<_i258.DashboardRemoteDataSource>(
+      () => _i258.DashboardRemoteDataSourceImpl(gh<_i921.ApiService>()),
     );
     gh.lazySingleton<_i674.SettingsRepository>(
       () => _i955.SettingsRepositoryImpl(
         localDataSource: gh<_i599.SettingsLocalDataSource>(),
         remoteDataSource: gh<_i188.SettingsRemoteDataSource>(),
       ),
+    );
+    gh.lazySingleton<_i665.DashboardRepository>(
+      () =>
+          _i509.DashboardRepositoryImpl(gh<_i258.DashboardRemoteDataSource>()),
     );
     gh.factory<_i190.DeleteUserData>(
       () => _i190.DeleteUserData(gh<_i674.SettingsRepository>()),
@@ -113,12 +140,35 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i813.UpdatePrivacySettings>(
       () => _i813.UpdatePrivacySettings(gh<_i674.SettingsRepository>()),
     );
+    gh.factory<_i993.GetDashboardStats>(
+      () => _i993.GetDashboardStats(gh<_i665.DashboardRepository>()),
+    );
+    gh.factory<_i993.GetDashboardSummary>(
+      () => _i993.GetDashboardSummary(gh<_i665.DashboardRepository>()),
+    );
+    gh.factory<_i993.GetWeeklyStats>(
+      () => _i993.GetWeeklyStats(gh<_i665.DashboardRepository>()),
+    );
+    gh.factory<_i993.GetRecentTrips>(
+      () => _i993.GetRecentTrips(gh<_i665.DashboardRepository>()),
+    );
     gh.factory<_i585.SettingsBloc>(
       () => _i585.SettingsBloc(
         getPrivacySettings: gh<_i901.GetPrivacySettings>(),
         updatePrivacySettings: gh<_i813.UpdatePrivacySettings>(),
         exportUserData: gh<_i375.ExportUserData>(),
         deleteUserData: gh<_i190.DeleteUserData>(),
+      ),
+    );
+    gh.factory<_i652.DashboardBloc>(
+      () => _i652.DashboardBloc(
+        gh<_i669.LocationService>(),
+        gh<_i33.TripDetectionService>(),
+        gh<_i521.TripLoggingService>(),
+        gh<_i993.GetDashboardStats>(),
+        gh<_i993.GetDashboardSummary>(),
+        gh<_i993.GetWeeklyStats>(),
+        gh<_i993.GetRecentTrips>(),
       ),
     );
     return this;
