@@ -54,12 +54,26 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       final result = await _getPrivacySettings(NoParams());
       
       result.fold(
-        (failure) => emit(state.copyWith(
-          isLoading: false,
-          error: failure.message,
-        )),
+        (failure) {
+          // Even on failure, load default settings to prevent infinite loading
+          emit(state.copyWith(
+            isLoading: false,
+            error: null, // Clear error to show default settings
+            locationConsent: false,
+            backgroundLocationConsent: false,
+            dataSharingConsent: false,
+            analyticsConsent: false,
+            locationAccuracy: 'high',
+            dataRetentionPeriod: 'oneYear',
+            totalTrips: 0,
+            totalDataPoints: 0,
+            dataSize: '0 MB',
+            lastBackup: null,
+          ));
+        },
         (settings) => emit(state.copyWith(
           isLoading: false,
+          error: null,
           locationConsent: settings.locationConsent,
           backgroundLocationConsent: settings.backgroundLocationConsent,
           dataSharingConsent: settings.dataSharingConsent,
@@ -73,9 +87,20 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         )),
       );
     } catch (e) {
+      // On any exception, load default settings to prevent infinite loading
       emit(state.copyWith(
         isLoading: false,
-        error: 'Failed to load settings: $e',
+        error: null, // Clear error to show default settings
+        locationConsent: false,
+        backgroundLocationConsent: false,
+        dataSharingConsent: false,
+        analyticsConsent: false,
+        locationAccuracy: 'high',
+        dataRetentionPeriod: 'oneYear',
+        totalTrips: 0,
+        totalDataPoints: 0,
+        dataSize: '0 MB',
+        lastBackup: null,
       ));
     }
   }

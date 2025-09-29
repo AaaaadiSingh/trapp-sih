@@ -29,12 +29,12 @@ class AppColors {
     0xFFCBD5E1,
   ); // Medium slate
 
-  // Text colors with enhanced contrast
-  static const Color textPrimary = Color(0xFF0F172A); // Slate 900
-  static const Color textSecondary = Color(0xFF475569); // Slate 600
-  static const Color textTertiary = Color(0xFF64748B); // Slate 500
-  static const Color onSurface = Color(0xFF0F172A);
-  static const Color onSurfaceVariant = Color(0xFF475569);
+  // Text colors with enhanced contrast - All black for maximum visibility
+  static const Color textPrimary = Color(0xFF000000); // Pure black
+  static const Color textSecondary = Color(0xFF000000); // Pure black
+  static const Color textTertiary = Color(0xFF000000); // Pure black
+  static const Color onSurface = Color(0xFF000000); // Pure black
+  static const Color onSurfaceVariant = Color(0xFF000000); // Pure black
   static const Color onPrimary = Color(0xFFFFFFFF);
   static const Color onSecondary = Color(0xFFFFFFFF);
   static const Color onAccent = Color(0xFFFFFFFF);

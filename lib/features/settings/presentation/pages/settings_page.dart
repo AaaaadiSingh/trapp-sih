@@ -41,7 +41,13 @@ class SettingsView extends StatelessWidget {
             color: AppColors.textPrimary,
             size: 20.sp,
           ),
-          onPressed: () => context.pop(),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/dashboard');
+            }
+          },
         ),
         title: Text(
           'Settings',

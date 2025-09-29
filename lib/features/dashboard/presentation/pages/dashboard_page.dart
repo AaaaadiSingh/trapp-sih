@@ -128,7 +128,7 @@ class DashboardView extends StatelessWidget {
                                   child: IconButton(
                                     icon: const Icon(Icons.settings),
                                     onPressed: () {
-                                      context.go('/settings');
+                                      context.push('/settings');
                                     },
                                     color: Colors.white,
                                     iconSize: 18.sp,

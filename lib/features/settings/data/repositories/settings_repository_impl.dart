@@ -24,7 +24,32 @@ class SettingsRepositoryImpl implements SettingsRepository {
       final localSettings = await localDataSource.getPrivacySettings();
       return Right(localSettings);
     } on CacheException {
-      // If no local settings, return default settings
+      try {
+        // If no local settings, create and cache default settings
+        const defaultSettings = PrivacySettings(
+          locationConsent: false,
+          backgroundLocationConsent: false,
+          dataSharingConsent: false,
+          analyticsConsent: false,
+          locationAccuracy: LocationAccuracy.high,
+          dataRetentionPeriod: DataRetentionPeriod.oneYear,
+        );
+        await localDataSource.cachePrivacySettings(defaultSettings);
+        return const Right(defaultSettings);
+      } catch (cacheError) {
+        // If caching fails, still return default settings
+        const defaultSettings = PrivacySettings(
+          locationConsent: false,
+          backgroundLocationConsent: false,
+          dataSharingConsent: false,
+          analyticsConsent: false,
+          locationAccuracy: LocationAccuracy.high,
+          dataRetentionPeriod: DataRetentionPeriod.oneYear,
+        );
+        return const Right(defaultSettings);
+      }
+    } catch (e) {
+      // Return default settings even on unexpected errors to prevent infinite loading
       const defaultSettings = PrivacySettings(
         locationConsent: false,
         backgroundLocationConsent: false,
@@ -33,10 +58,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
         locationAccuracy: LocationAccuracy.high,
         dataRetentionPeriod: DataRetentionPeriod.oneYear,
       );
-      await localDataSource.cachePrivacySettings(defaultSettings);
       return const Right(defaultSettings);
-    } catch (e) {
-      return Left(CacheFailure(message: 'Failed to get privacy settings: $e'));
     }
   }
 

@@ -92,7 +92,7 @@ class PlanTripsTab extends StatelessWidget {
         Text(
           'Plan a New Trip',
           style: AppTextStyles.titleLarge.copyWith(
-            color: AppColors.textPrimary,
+            color: Colors.black,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -118,7 +118,7 @@ class PlanTripsTab extends StatelessWidget {
         Text(
           'Your Planned Trips',
           style: AppTextStyles.titleLarge.copyWith(
-            color: AppColors.textPrimary,
+            color: Colors.black,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -145,14 +145,14 @@ class PlanTripsTab extends StatelessWidget {
           Text(
             'No planned trips',
             style: AppTextStyles.titleMedium.copyWith(
-              color: AppColors.textSecondary,
+              color: Colors.black,
             ),
           ),
           SizedBox(height: 8.h),
           Text(
             'Plan your first trip using the form',
             style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.textSecondary.withValues(alpha: 0.7),
+              color: Colors.black,
             ),
             textAlign: TextAlign.center,
           ),
@@ -185,13 +185,14 @@ class PlanTripsTab extends StatelessWidget {
                         dateFormat.format(trip.plannedDate),
                         style: AppTextStyles.titleMedium.copyWith(
                           fontWeight: FontWeight.bold,
+                          color: Colors.black,
                         ),
                       ),
                       SizedBox(height: 4.h),
                       Text(
                         timeFormat.format(trip.plannedTime),
                         style: AppTextStyles.bodyMedium.copyWith(
-                          color: AppColors.textSecondary,
+                          color: Colors.black,
                         ),
                       ),
                     ],
@@ -214,6 +215,7 @@ class PlanTripsTab extends StatelessWidget {
                     trip.origin,
                     style: AppTextStyles.bodyLarge.copyWith(
                       fontWeight: FontWeight.w500,
+                      color: Colors.black,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -239,6 +241,7 @@ class PlanTripsTab extends StatelessWidget {
                     trip.destination,
                     style: AppTextStyles.bodyLarge.copyWith(
                       fontWeight: FontWeight.w500,
+                      color: Colors.black,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -251,13 +254,14 @@ class PlanTripsTab extends StatelessWidget {
                 'Notes:',
                 style: AppTextStyles.bodyMedium.copyWith(
                   fontWeight: FontWeight.w500,
+                  color: Colors.black,
                 ),
               ),
               SizedBox(height: 4.h),
               Text(
                 trip.notes!,
                 style: AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.textSecondary,
+                  color: Colors.black,
                 ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -380,8 +384,10 @@ class _TripPlanFormState extends State<TripPlanForm> {
         children: [
           TextFormField(
             controller: _originController,
+            style: const TextStyle(color: Colors.black),
             decoration: InputDecoration(
               labelText: 'Origin',
+              labelStyle: const TextStyle(color: Colors.black),
               prefixIcon: const Icon(
                 Icons.location_on,
                 color: AppColors.primary,
@@ -400,8 +406,10 @@ class _TripPlanFormState extends State<TripPlanForm> {
           SizedBox(height: 16.h),
           TextFormField(
             controller: _destinationController,
+            style: const TextStyle(color: Colors.black),
             decoration: InputDecoration(
               labelText: 'Destination',
+              labelStyle: const TextStyle(color: Colors.black),
               prefixIcon: const Icon(Icons.flag, color: AppColors.secondary),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
@@ -423,6 +431,7 @@ class _TripPlanFormState extends State<TripPlanForm> {
                   child: InputDecorator(
                     decoration: InputDecoration(
                       labelText: 'Date',
+                      labelStyle: const TextStyle(color: Colors.black),
                       prefixIcon: const Icon(Icons.calendar_today, size: 20),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -430,7 +439,7 @@ class _TripPlanFormState extends State<TripPlanForm> {
                     ),
                     child: Text(
                       DateFormat('MMM d, yyyy').format(_selectedDate),
-                      style: AppTextStyles.bodyMedium,
+                      style: AppTextStyles.bodyMedium.copyWith(color: Colors.black),
                     ),
                   ),
                 ),
@@ -442,6 +451,7 @@ class _TripPlanFormState extends State<TripPlanForm> {
                   child: InputDecorator(
                     decoration: InputDecoration(
                       labelText: 'Time',
+                      labelStyle: const TextStyle(color: Colors.black),
                       prefixIcon: const Icon(Icons.access_time, size: 20),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -449,7 +459,7 @@ class _TripPlanFormState extends State<TripPlanForm> {
                     ),
                     child: Text(
                       _selectedTime.format(context),
-                      style: AppTextStyles.bodyMedium,
+                      style: AppTextStyles.bodyMedium.copyWith(color: Colors.black),
                     ),
                   ),
                 ),
@@ -460,7 +470,7 @@ class _TripPlanFormState extends State<TripPlanForm> {
           Text(
             'Transport Mode',
             style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.textSecondary,
+              color: Colors.black,
             ),
           ),
           SizedBox(height: 8.h),
@@ -468,8 +478,10 @@ class _TripPlanFormState extends State<TripPlanForm> {
           SizedBox(height: 16.h),
           TextFormField(
             controller: _notesController,
+            style: const TextStyle(color: Colors.black),
             decoration: InputDecoration(
               labelText: 'Notes (Optional)',
+              labelStyle: const TextStyle(color: Colors.black),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -580,7 +592,7 @@ class _TripPlanFormState extends State<TripPlanForm> {
                             color:
                                 isSelected
                                     ? Colors.white
-                                    : AppColors.textPrimary,
+                                    : Colors.black,
                             fontWeight:
                                 isSelected
                                     ? FontWeight.w500

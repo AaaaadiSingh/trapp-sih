@@ -54,24 +54,15 @@ class LocationSettingsSection extends StatelessWidget {
                   items: LocationAccuracy.values.map((accuracy) {
                     return DropdownMenuItem(
                       value: accuracy.value,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            accuracy.displayName,
-                            style: AppTextStyles.bodyMedium.copyWith(
-                              color: AppColors.textPrimary,
-                              fontWeight: FontWeight.w500,
-                            ),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Text(
+                          accuracy.displayName,
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            color: AppColors.textPrimary,
                           ),
-                          Text(
-                            accuracy.description,
-                            style: AppTextStyles.bodySmall.copyWith(
-                              color: AppColors.textSecondary,
-                            ),
-                          ),
-                        ],
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     );
                   }).toList(),
@@ -98,24 +89,15 @@ class LocationSettingsSection extends StatelessWidget {
                   items: DataRetentionPeriod.values.map((period) {
                     return DropdownMenuItem(
                       value: period.value,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            period.displayName,
-                            style: AppTextStyles.bodyMedium.copyWith(
-                              color: AppColors.textPrimary,
-                              fontWeight: FontWeight.w500,
-                            ),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Text(
+                          period.displayName,
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            color: AppColors.textPrimary,
                           ),
-                          Text(
-                            period.description,
-                            style: AppTextStyles.bodySmall.copyWith(
-                              color: AppColors.textSecondary,
-                            ),
-                          ),
-                        ],
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     );
                   }).toList(),
@@ -195,11 +177,14 @@ class LocationSettingsSection extends StatelessWidget {
           ),
         ),
         SizedBox(height: 8.h),
-        DropdownButtonFormField<String>(
-          value: value,
-          items: items,
-          onChanged: enabled ? onChanged : null,
-          decoration: InputDecoration(
+        ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: double.infinity),
+          child: DropdownButtonFormField<String>(
+            value: value,
+            items: items,
+            onChanged: enabled ? onChanged : null,
+            isExpanded: true,
+            decoration: InputDecoration(
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(color: AppColors.outline),
@@ -223,6 +208,7 @@ class LocationSettingsSection extends StatelessWidget {
           ),
           style: AppTextStyles.bodyMedium.copyWith(
             color: enabled ? AppColors.textPrimary : AppColors.textSecondary,
+          ),
           ),
         ),
       ],
