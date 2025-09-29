@@ -44,73 +44,81 @@ class LocationSettingsSection extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: 16.h),
-                
+
                 // Location Accuracy Setting
                 _buildDropdownSetting(
                   context,
                   title: 'Location Accuracy',
                   subtitle: 'Choose the precision level for location tracking',
                   value: state.locationAccuracy,
-                  items: LocationAccuracy.values.map((accuracy) {
-                    return DropdownMenuItem(
-                      value: accuracy.value,
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: Text(
-                          accuracy.displayName,
-                          style: AppTextStyles.bodyMedium.copyWith(
-                            color: AppColors.textPrimary,
+                  items:
+                      LocationAccuracy.values.map((accuracy) {
+                        return DropdownMenuItem(
+                          value: accuracy.value,
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: Text(
+                              accuracy.displayName,
+                              style: AppTextStyles.bodyMedium.copyWith(
+                                color: AppColors.textPrimary,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: state.isSaving ? null : (value) {
-                    if (value != null) {
-                      context.read<SettingsBloc>().add(
-                        SettingsEvent.updateLocationAccuracy(value),
-                      );
-                    }
-                  },
+                        );
+                      }).toList(),
+                  onChanged:
+                      state.isSaving
+                          ? null
+                          : (value) {
+                            if (value != null) {
+                              context.read<SettingsBloc>().add(
+                                SettingsEvent.updateLocationAccuracy(value),
+                              );
+                            }
+                          },
                   enabled: state.locationConsent,
                 ),
-                
+
                 SizedBox(height: 16.h),
                 Divider(color: AppColors.outline.withValues(alpha: 0.3)),
                 SizedBox(height: 16.h),
-                
+
                 // Data Retention Period
                 _buildDropdownSetting(
                   context,
                   title: 'Data Retention Period',
                   subtitle: 'How long to keep your location data',
                   value: state.dataRetentionPeriod,
-                  items: DataRetentionPeriod.values.map((period) {
-                    return DropdownMenuItem(
-                      value: period.value,
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: Text(
-                          period.displayName,
-                          style: AppTextStyles.bodyMedium.copyWith(
-                            color: AppColors.textPrimary,
+                  items:
+                      DataRetentionPeriod.values.map((period) {
+                        return DropdownMenuItem(
+                          value: period.value,
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: Text(
+                              period.displayName,
+                              style: AppTextStyles.bodyMedium.copyWith(
+                                color: AppColors.textPrimary,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: state.isSaving ? null : (value) {
-                    if (value != null) {
-                      context.read<SettingsBloc>().add(
-                        SettingsEvent.updateDataRetentionPeriod(value),
-                      );
-                    }
-                  },
+                        );
+                      }).toList(),
+                  onChanged:
+                      state.isSaving
+                          ? null
+                          : (value) {
+                            if (value != null) {
+                              context.read<SettingsBloc>().add(
+                                SettingsEvent.updateDataRetentionPeriod(value),
+                              );
+                            }
+                          },
                   enabled: true,
                 ),
-                
+
                 if (!state.locationConsent) ...[
                   SizedBox(height: 16.h),
                   Container(
@@ -185,30 +193,32 @@ class LocationSettingsSection extends StatelessWidget {
             onChanged: enabled ? onChanged : null,
             isExpanded: true,
             decoration: InputDecoration(
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: AppColors.outline),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: AppColors.outline),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: AppColors.outline),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: AppColors.primary, width: 2),
+              ),
+              disabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(
+                  color: AppColors.outline.withValues(alpha: 0.5),
+                ),
+              ),
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 12.w,
+                vertical: 8.h,
+              ),
             ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: AppColors.outline),
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: enabled ? AppColors.textPrimary : AppColors.textSecondary,
             ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: AppColors.primary, width: 2),
-            ),
-            disabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: AppColors.outline.withValues(alpha: 0.5)),
-            ),
-            contentPadding: EdgeInsets.symmetric(
-              horizontal: 12.w,
-              vertical: 8.h,
-            ),
-          ),
-          style: AppTextStyles.bodyMedium.copyWith(
-            color: enabled ? AppColors.textPrimary : AppColors.textSecondary,
-          ),
           ),
         ),
       ],

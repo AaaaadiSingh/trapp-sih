@@ -19,7 +19,9 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => sl<SettingsBloc>()..add(const SettingsEvent.loadSettings()),
+      create:
+          (context) =>
+              sl<SettingsBloc>()..add(const SettingsEvent.loadSettings()),
       child: const SettingsView(),
     );
   }
@@ -61,9 +63,7 @@ class SettingsView extends StatelessWidget {
       body: BlocBuilder<SettingsBloc, SettingsState>(
         builder: (context, state) {
           if (state.isLoading) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (state.error != null) {
@@ -126,15 +126,15 @@ class SettingsView extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 32.h),
-                  
+
                   // Privacy Settings Section
                   const PrivacySettingsSection(),
                   SizedBox(height: 24.h),
-                  
+
                   // Location Settings Section
                   const LocationSettingsSection(),
                   SizedBox(height: 24.h),
-                  
+
                   // Data Management Section
                   const DataManagementSection(),
                 ],

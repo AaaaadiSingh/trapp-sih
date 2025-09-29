@@ -63,10 +63,12 @@ class SettingsRepositoryImpl implements SettingsRepository {
   }
 
   @override
-  Future<Either<Failure, void>> updatePrivacySettings(PrivacySettings settings) async {
+  Future<Either<Failure, void>> updatePrivacySettings(
+    PrivacySettings settings,
+  ) async {
     try {
       await localDataSource.cachePrivacySettings(settings);
-      
+
       // Optionally sync with remote
       try {
         await remoteDataSource.updatePrivacySettings(settings);
@@ -74,12 +76,14 @@ class SettingsRepositoryImpl implements SettingsRepository {
         // Continue even if remote sync fails
         print('Failed to sync settings to remote: $e');
       }
-      
+
       return const Right(null);
     } on CacheException {
       return Left(CacheFailure(message: 'Failed to update privacy settings'));
     } catch (e) {
-      return Left(CacheFailure(message: 'Failed to update privacy settings: $e'));
+      return Left(
+        CacheFailure(message: 'Failed to update privacy settings: $e'),
+      );
     }
   }
 
@@ -96,10 +100,12 @@ class SettingsRepositoryImpl implements SettingsRepository {
   }
 
   @override
-  Future<Either<Failure, void>> deleteUserData({required bool deleteAll}) async {
+  Future<Either<Failure, void>> deleteUserData({
+    required bool deleteAll,
+  }) async {
     try {
       await localDataSource.deleteUserData(deleteAll: deleteAll);
-      
+
       // Optionally sync with remote
       try {
         await remoteDataSource.deleteUserData(deleteAll: deleteAll);
@@ -107,7 +113,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
         // Continue even if remote sync fails
         print('Failed to sync data deletion to remote: $e');
       }
-      
+
       return const Right(null);
     } on CacheException {
       return Left(CacheFailure(message: 'Failed to delete user data'));

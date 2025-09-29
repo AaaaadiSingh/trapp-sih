@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../../features/splash/presentation/splash_screen.dart';
 import '../../features/profile/presentation/pages/personal_info_page.dart';
 import '../../features/profile/presentation/pages/travel_preferences_page.dart';
 import '../../features/profile/presentation/pages/location_demographics_page.dart';
@@ -19,6 +20,7 @@ import '../di/injection_container.dart';
 import '../services/trip_detection_service.dart';
 
 class AppRouter {
+  static const String splash = '/';
   static const String personalInfo = '/personal-info';
   static const String travelPreferences = '/travel-preferences';
   static const String locationDemographics = '/location-demographics';
@@ -29,7 +31,7 @@ class AppRouter {
   static const String tripMap = '/trip-map';
 
   static final GoRouter router = GoRouter(
-    initialLocation: personalInfo,
+    initialLocation: splash,
     redirect: (context, state) async {
       // Check if onboarding is completed
       final prefs = sl<SharedPreferences>();
@@ -53,6 +55,11 @@ class AppRouter {
       return null; // No redirect needed
     },
     routes: [
+      GoRoute(
+        path: splash,
+        name: 'splash',
+        builder: (context, state) => const SplashScreen(),
+      ),
       GoRoute(
         path: personalInfo,
         name: 'personal-info',

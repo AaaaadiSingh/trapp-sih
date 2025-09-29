@@ -144,16 +144,12 @@ class PlanTripsTab extends StatelessWidget {
           SizedBox(height: 16.h),
           Text(
             'No planned trips',
-            style: AppTextStyles.titleMedium.copyWith(
-              color: Colors.black,
-            ),
+            style: AppTextStyles.titleMedium.copyWith(color: Colors.black),
           ),
           SizedBox(height: 8.h),
           Text(
             'Plan your first trip using the form',
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: Colors.black,
-            ),
+            style: AppTextStyles.bodyMedium.copyWith(color: Colors.black),
             textAlign: TextAlign.center,
           ),
         ],
@@ -260,9 +256,7 @@ class PlanTripsTab extends StatelessWidget {
               SizedBox(height: 4.h),
               Text(
                 trip.notes!,
-                style: AppTextStyles.bodyMedium.copyWith(
-                  color: Colors.black,
-                ),
+                style: AppTextStyles.bodyMedium.copyWith(color: Colors.black),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -439,7 +433,9 @@ class _TripPlanFormState extends State<TripPlanForm> {
                     ),
                     child: Text(
                       DateFormat('MMM d, yyyy').format(_selectedDate),
-                      style: AppTextStyles.bodyMedium.copyWith(color: Colors.black),
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: Colors.black,
+                      ),
                     ),
                   ),
                 ),
@@ -459,7 +455,9 @@ class _TripPlanFormState extends State<TripPlanForm> {
                     ),
                     child: Text(
                       _selectedTime.format(context),
-                      style: AppTextStyles.bodyMedium.copyWith(color: Colors.black),
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: Colors.black,
+                      ),
                     ),
                   ),
                 ),
@@ -469,9 +467,7 @@ class _TripPlanFormState extends State<TripPlanForm> {
           SizedBox(height: 16.h),
           Text(
             'Transport Mode',
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: Colors.black,
-            ),
+            style: AppTextStyles.bodyMedium.copyWith(color: Colors.black),
           ),
           SizedBox(height: 8.h),
           _buildTransportModeSelector(),
@@ -589,10 +585,7 @@ class _TripPlanFormState extends State<TripPlanForm> {
                         Text(
                           label,
                           style: AppTextStyles.bodyMedium.copyWith(
-                            color:
-                                isSelected
-                                    ? Colors.white
-                                    : Colors.black,
+                            color: isSelected ? Colors.white : Colors.black,
                             fontWeight:
                                 isSelected
                                     ? FontWeight.w500
